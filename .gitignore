@@ -24,6 +24,3 @@ build/
 /mvnw
 /.mvn/wrapper/MavenWrapperDownloader.java
 /.mvn/wrapper/maven-wrapper.properties
-
-### LOG ###
-/log/nautilus/

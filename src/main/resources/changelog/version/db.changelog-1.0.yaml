@@ -1,132 +1,19 @@
 databaseChangeLog:
 
   - changeSet:
-      id: tables
-      author: aleksandar.brankovic
+      id: teams-and-players
+      author: slobodan.tanasic@mozzartbet.com
 
       changes:
         - sql:
-          comment: Create all tables
+          comment: Teams and players
           strip-comments: true
           sql: |
 
-            create table customer (
-            id bigserial primary key,
-            name varchar(255) not null,
-            address varchar(255) not null,
-            city varchar(255) not null,
-            phone varchar(30) not null,
-            date date,
-            legal_form varchar(30) not null,
-            sanitise_period smallint,
-            debt decimal default 0 not null,
-            packaging_small integer default 0 not null,
-            packaging_large integer default 0 not null,
-            created_on timestamp default current_timestamp not null,
-            modified_on timestamp default current_timestamp not null
-            );
-
-            create table article (
-            id bigserial primary key,
-            name varchar(255) unique not null,
-            price decimal not null,
-            tax decimal not null,
-            mandatory boolean default false not null,
-            created_on timestamp default current_timestamp not null,
-            modified_on timestamp default current_timestamp not null
-            );
-
-            insert into article (name, price, tax, mandatory)
-            values ('Voda 15L', 0, 20, true);
-            insert into article (name, price, tax, mandatory)
-            values ('Voda 19L', 0, 20, true);
-            insert into article (name, price, tax, mandatory)
-            values ('Čaše', 0, 20, true);
-
-            create table "order" (
-            id bigserial primary key,
-            date date not null,
-            delivered_by varchar(30) not null,
-            payed boolean not null,
-            note text,
-            customer_id bigint,
-            created_on timestamp default current_timestamp not null,
-            modified_on timestamp default current_timestamp not null,
-            constraint fk_customer
-              foreign key(customer_id)
-              references customer(id)
-              on delete cascade
-            );
-
-            create table packaging (
-            id bigserial primary key,
-            date date not null,
-            water_small_returned integer not null,
-            water_large_returned integer not null,
-            customer_id bigint,
-            created_on timestamp default current_timestamp not null,
-            modified_on timestamp default current_timestamp not null,
-            constraint fk_customer
-              foreign key(customer_id)
-              references customer(id)
-              on delete cascade
-            );
-
-            create table sanitize (
-            id bigserial primary key,
-            date date not null,
-            customer_id bigint,
-            created_on timestamp default current_timestamp not null,
-            modified_on timestamp default current_timestamp not null,
-            constraint fk_customer
-              foreign key(customer_id)
-              references customer(id)
-              on delete cascade
-            );
-
-            create table order_item (
-            id bigserial primary key,
-            article_name varchar(255) not null,
-            article_price decimal not null,
-            article_tax decimal not null,
-            quantity integer not null,
-            order_id bigint,
-            created_on timestamp default current_timestamp not null,
-            modified_on timestamp default current_timestamp not null,
-            constraint fk_order
-              foreign key(order_id)
-              references "order"(id)
-              on delete cascade
-            );
-
-            CREATE EXTENSION IF NOT EXISTS pg_trgm;
-
-            CREATE INDEX customer_name_trgn
-                ON customer USING gin(lower(name) gin_trgm_ops);
-
-            CREATE INDEX customer_address_trgn
-                ON customer USING gin(lower(address) gin_trgm_ops);
-
-            CREATE INDEX customer_phone_trgn
-                ON customer USING gin(lower(phone) gin_trgm_ops);
-
-            CREATE INDEX customer_city_trgn
-                ON customer USING gin(lower(city) gin_trgm_ops);
-
-            CREATE INDEX customer_name
-                ON customer (lower(name));
-
-            CREATE INDEX customer_address
-                ON customer (lower(address));
-
-            CREATE INDEX customer_phone
-                ON customer (lower(phone));
-
-            CREATE INDEX customer_city
-                ON customer (lower(city));
-
-            CREATE INDEX customer_date
-                ON customer (date);
-
-            CREATE INDEX order_date
-                ON "order" (date);
+            CREATE TABLE MyGuests (
+            id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            firstname VARCHAR(30) NOT NULL,
+            lastname VARCHAR(30) NOT NULL,
+            email VARCHAR(50),
+            reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            )
