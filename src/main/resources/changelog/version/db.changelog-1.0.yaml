@@ -1,19 +1,99 @@
 databaseChangeLog:
 
   - changeSet:
-      id: teams-and-players
-      author: slobodan.tanasic@mozzartbet.com
+      id: users
+      author: aleksandar.brankovic
 
       changes:
         - sql:
-          comment: Teams and players
+          comment: Create table customer, article
           strip-comments: true
           sql: |
 
-            CREATE TABLE MyGuests (
-            id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            firstname VARCHAR(30) NOT NULL,
-            lastname VARCHAR(30) NOT NULL,
-            email VARCHAR(50),
-            reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-            )
+            create table customer (
+            id bigserial primary key,
+            name varchar(255) not null,
+            address varchar(255) not null,
+            city varchar(255) not null,
+            phone varchar(30) not null,
+            date date not null,
+            type varchar(30),
+            sanitise_period smallint not null,
+            debt decimal default 0 not null,
+            packaging_small integer default 0 not null,
+            packaging_large integer default 0 not null,
+            backlog_packaging_small boolean default false not null,
+            backlog_packaging_large boolean default false not null,
+            created_on timestamp default current_timestamp not null,
+            modified_on timestamp default current_timestamp not null
+            );
+
+            create table article (
+            id bigserial primary key,
+            name varchar(255) unique not null,
+            price decimal not null,
+            mandatory boolean default false not null,
+            created_on timestamp default current_timestamp not null,
+            modified_on timestamp default current_timestamp not null
+            );
+
+            insert into article (name, price, mandatory)
+            values ('Voda 15L', 0, true);
+            insert into article (name, price, mandatory)
+            values ('Voda 19L', 0, true);
+            insert into article (name, price, mandatory)
+            values ('Čaše', 0, true);
+
+            create table "order" (
+            id bigserial primary key,
+            date date not null,
+            delivered_by varchar(30) not null,
+            payed boolean not null,
+            packaging_debt_small integer not null,
+            packaging_debt_large integer not null,
+            note text,
+            customer_id integer,
+            created_on timestamp default current_timestamp not null,
+            modified_on timestamp default current_timestamp not null,
+            constraint fk_customer
+              foreign key(customer_id)
+              references customer(id)
+              on delete cascade
+            );
+
+
+            create table order_item (
+            id bigserial primary key,
+            article_name varchar(255) not null,
+            article_price decimal not null,
+            quantity integer not null,
+            order_id bigint,
+            created_on timestamp default current_timestamp not null,
+            modified_on timestamp default current_timestamp not null,
+            constraint fk_order
+              foreign key(order_id)
+              references "order"(id)
+              on delete cascade
+            );
+
+            INSERT INTO public.customer
+            ("name", address, city, phone, "date", "type", sanitise_period, debt, packaging_small, packaging_large, created_on, modified_on)
+            VALUES('Miloje Mikic', 'Sutjeka 2', 'Beograd', '06486523', CURRENT_TIMESTAMP::DATE, 'LEGAL_ENTITY', 5, 501.0, 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+            INSERT INTO public.customer
+            ("name", address, city, phone, "date", "type", sanitise_period, created_on, modified_on)
+            VALUES('Zivorad Zikic', 'Zelengorska 16', 'Pozarevac', '061453254', CURRENT_TIMESTAMP::DATE, 'INDIVIDUAL', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+            INSERT INTO public."order"
+            ("date", delivered_by, payed, packaging_debt_small, packaging_debt_large, note, customer_id, created_on, modified_on)
+            VALUES(CURRENT_TIMESTAMP::DATE, 'FIRST', false, 2, 1, 'Nista posebno', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+            INSERT INTO public.order_item
+            (article_name, article_price, quantity, order_id, created_on, modified_on)
+            VALUES('Voda 15L', 100.50, 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+            INSERT INTO public.order_item
+            (article_name, article_price, quantity, order_id, created_on, modified_on)
+            VALUES('Voda 19L', 300, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXToggleButton?>
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
@@ -22,12 +20,24 @@
    <children>
       <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="497.0" prefWidth="501.0" spacing="10.0" styleClass="background" stylesheets="@../styles/Styles.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
          <children>
-            <FontAwesomeIconView fx:id="cancel" fill="#e36e6e" glyphName="REMOVE" onMouseClicked="#cancel" size="30" styleClass="close-dialog">
+            <Button fx:id="cancel" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#cancel" prefHeight="31.0" prefWidth="32.0" style="-fx-background-color: red; -fx-background-radius: 50%;" text="X" textFill="WHITE">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <effect>
+                  <DropShadow blurType="ONE_PASS_BOX" color="#6468b2" />
+               </effect>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
                <VBox.margin>
-                  <Insets left="450.0" top="10.0" />
+                  <Insets left="440.0" top="10.0" />
                </VBox.margin>
-            </FontAwesomeIconView>
-            <Label fx:id="title" text="" textFill="WHITE">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </Button>
+            <Label fx:id="title" text="Dodavanje novog korisnika" textFill="WHITE">
                <font>
                   <Font size="20.0" />
                </font>
@@ -35,7 +45,7 @@
                   <Insets bottom="10.0" left="20.0" top="30.0" />
                </VBox.margin>
             </Label>
-            <TextField fx:id="name" prefHeight="30.0" prefWidth="246.0" promptText="Ime/Naziv">
+            <TextField fx:id="name" prefHeight="30.0" prefWidth="246.0" promptText="Korisnik">
                <VBox.margin>
                   <Insets left="25.0" right="25.0" />
                </VBox.margin>
@@ -55,52 +65,9 @@
                   <Insets left="25.0" right="245.0" />
                </VBox.margin>
             </TextField>
-            <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="255.0" spacing="15.0">
-               <children>
-                  <RadioButton fx:id="rbIndividual" mnemonicParsing="false" selected="true" text="Fizičko lice" textFill="WHITE">
-                     <toggleGroup>
-                        <ToggleGroup fx:id="legalForm" />
-                     </toggleGroup>
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </RadioButton>
-                  <RadioButton fx:id="rbLegalEntity" mnemonicParsing="false" text="Pravno lice" textFill="WHITE" toggleGroup="$legalForm">
-                     <HBox.margin>
-                        <Insets left="10.0" />
-                     </HBox.margin>
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </RadioButton>
-               </children>
-               <VBox.margin>
-                  <Insets left="25.0" right="25.0" />
-               </VBox.margin>
-            </HBox>
-            <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="255.0" spacing="15.0">
-               <children>
-                  <JFXToggleButton fx:id="tbWithContract" contentDisplay="RIGHT" onAction="#changeContractDetails" prefHeight="58.0" prefWidth="174.0" selected="true" text="Ugovorna obaveza" textFill="WHITE" toggleColor="WHITE" toggleLineColor="#7ed321" unToggleColor="WHITE" unToggleLineColor="#5e90dc">
-                     <padding>
-                        <Insets bottom="-10.0" top="-10.0" />
-                     </padding>
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </JFXToggleButton>
-               </children>
-               <VBox.margin>
-                  <Insets left="25.0" right="25.0" />
-               </VBox.margin>
-            </HBox>
-            <DatePicker fx:id="date" prefHeight="30.0" prefWidth="245.0" promptText="Datum ugovora">
-               <VBox.margin>
-                  <Insets left="25.0" />
-               </VBox.margin>
-            </DatePicker>
             <HBox prefHeight="30.0" prefWidth="491.0">
                <children>
-                  <Label fx:id="sanitizeLabel" prefHeight="30.0" text="Broj meseci na koji se radi sanitacija  aparata" textFill="WHITE">
+                  <Label prefHeight="30.0" text="Broj meseci na koji se radi sanitacija  aparata" textFill="WHITE">
                      <HBox.margin>
                         <Insets left="25.0" />
                      </HBox.margin>
@@ -115,9 +82,37 @@
                   </Spinner>
                </children>
             </HBox>
+            <DatePicker fx:id="date" editable="false" prefHeight="30.0" prefWidth="245.0" promptText="Datum ugovora">
+               <VBox.margin>
+                  <Insets left="25.0" />
+               </VBox.margin>
+            </DatePicker>
+            <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="255.0" spacing="15.0">
+               <children>
+                  <RadioButton fx:id="rbIndividual" mnemonicParsing="false" selected="true" text="Fizičko lice" textFill="WHITE">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="type" />
+                     </toggleGroup>
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </RadioButton>
+                  <RadioButton fx:id="rbLegalEntity" mnemonicParsing="false" text="Pravno lice" textFill="WHITE" toggleGroup="$type">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </RadioButton>
+               </children>
+               <VBox.margin>
+                  <Insets left="25.0" right="25.0" />
+               </VBox.margin>
+            </HBox>
             <HBox nodeOrientation="RIGHT_TO_LEFT" prefHeight="31.0" prefWidth="461.0" spacing="10.0">
                <children>
-                  <Button fx:id="saveCustomer" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#saveCustomer" prefHeight="30.0" prefWidth="75.0" styleClass="save-button" text="Sačuvaj" textFill="WHITE">
+                  <Button fx:id="saveCustomer" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#saveCustomer" prefHeight="30.0" prefWidth="75.0" styleClass="btnGreen" text="Sačuvaj" textFill="WHITE">
                      <font>
                         <Font size="15.0" />
                      </font>
@@ -128,7 +123,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </Button>
-                  <Button fx:id="reset" mnemonicParsing="false" onAction="#reset" prefHeight="30.0" prefWidth="75.0" styleClass="reset-button" text="Resetuj" textFill="WHITE">
+                  <Button fx:id="reset" mnemonicParsing="false" onAction="#reset" prefHeight="30.0" prefWidth="75.0" style="-fx-background-color: blue;" text="Resetuj" textFill="WHITE">
                      <effect>
                         <DropShadow blurType="ONE_PASS_BOX" color="#1965d0" />
                      </effect>
@@ -147,7 +142,7 @@
                   <Insets left="30.0" top="30.0" />
                </VBox.margin>
                <padding>
-                  <Insets bottom="20.0" left="30.0" />
+                  <Insets left="30.0" />
                </padding>
             </HBox>
          </children>

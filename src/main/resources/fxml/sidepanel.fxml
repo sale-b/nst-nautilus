@@ -12,7 +12,7 @@
    <children>
       <AnchorPane minHeight="60.0" minWidth="230.0" onMouseClicked="#sanitizeLate" style="-fx-background-color: white; -fx-background-radius: 10px;" styleClass="side-pane-item">
          <children>
-            <Label fx:id="labelSanitizeLate" alignment="CENTER" layoutY="2.0" prefHeight="58.0" prefWidth="100.0" styleClass="card-number" text="-" textFill="#5e5e5e" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <Label fx:id="labelSanitizeLate" alignment="CENTER" layoutY="2.0" prefHeight="58.0" prefWidth="100.0" styleClass="card-number" text="20" textFill="#5e5e5e" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <font>
                   <Font size="30.0" />
                </font>
@@ -20,7 +20,7 @@
                   <Insets top="15.0" />
                </padding>
             </Label>
-            <Label fx:id="labelSanitizeLateTitle" alignment="CENTER" layoutX="17.0" layoutY="-13.0" minHeight="35.0" nodeOrientation="LEFT_TO_RIGHT" styleClass="card-heading" text="Sanitacija kasni" textFill="WHITE" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="-20.0">
+            <Label alignment="CENTER" layoutX="17.0" layoutY="-13.0" minHeight="35.0" nodeOrientation="LEFT_TO_RIGHT" style="-fx-background-color: #ee7373;" styleClass="card-heading" text="Sanitacija kasni" textFill="WHITE" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="-20.0">
                <font>
                   <Font size="18.0" />
                </font>
@@ -41,7 +41,7 @@
       </AnchorPane>
       <AnchorPane minHeight="60.0" minWidth="230.0" onMouseClicked="#sanitizeNeeded" style="-fx-background-color: white; -fx-background-radius: 10px;" styleClass="side-pane-item">
          <children>
-            <Label fx:id="labelSanitizeNeeded" alignment="CENTER" layoutY="2.0" prefHeight="58.0" prefWidth="100.0" styleClass="card-number" text="-" textFill="#5e5e5e" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <Label fx:id="labelSanitizeNeeded" alignment="CENTER" layoutY="2.0" prefHeight="58.0" prefWidth="100.0" styleClass="card-number" text="16" textFill="#5e5e5e" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <font>
                   <Font size="30.0" />
                </font>
@@ -49,7 +49,7 @@
                   <Insets top="15.0" />
                </padding>
             </Label>
-            <Label fx:id="labelSanitizeNeededTitle" alignment="CENTER" layoutX="17.0" layoutY="-13.0" minHeight="35.0" nodeOrientation="LEFT_TO_RIGHT" styleClass="card-heading" text="Sanitacija potrebna" textFill="WHITE" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="-20.0">
+            <Label alignment="CENTER" layoutX="17.0" layoutY="-13.0" minHeight="35.0" nodeOrientation="LEFT_TO_RIGHT" style="-fx-background-color: #EBB870;" styleClass="card-heading" text="Sanitacija potrebna" textFill="WHITE" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="-20.0">
                <font>
                   <Font size="18.0" />
                </font>
@@ -70,7 +70,7 @@
       </AnchorPane>
       <AnchorPane minHeight="60.0" minWidth="230.0" onMouseClicked="#paymentLate" style="-fx-background-color: white; -fx-background-radius: 10px;" styleClass="side-pane-item">
          <children>
-            <Label fx:id="labelPaymentLate" alignment="CENTER" layoutY="2.0" prefHeight="58.0" prefWidth="100.0" styleClass="card-number" text="-" textFill="#5e5e5e" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <Label fx:id="labelPaymentLate" alignment="CENTER" layoutY="2.0" prefHeight="58.0" prefWidth="100.0" styleClass="card-number" text="16" textFill="#5e5e5e" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <font>
                   <Font size="30.0" />
                </font>
@@ -78,7 +78,7 @@
                   <Insets top="15.0" />
                </padding>
             </Label>
-            <Label fx:id="labelPaymentLateTitle" alignment="CENTER" layoutX="17.0" layoutY="-13.0" minHeight="35.0" nodeOrientation="LEFT_TO_RIGHT" styleClass="card-heading" text="Naplata kasni" textFill="WHITE" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="-20.0">
+            <Label alignment="CENTER" layoutX="17.0" layoutY="-13.0" minHeight="35.0" nodeOrientation="LEFT_TO_RIGHT" style="-fx-background-color: #EB707A;" styleClass="card-heading" text="Naplata kasni" textFill="WHITE" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="-20.0">
                <font>
                   <Font size="18.0" />
                </font>
@@ -97,9 +97,9 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </AnchorPane>
-      <AnchorPane minHeight="60.0" minWidth="230.0" onMouseClicked="#packagingDebt" style="-fx-background-color: white; -fx-background-radius: 10px;" styleClass="side-pane-item">
+      <AnchorPane minHeight="60.0" minWidth="230.0" onMouseClicked="#packagingDept" style="-fx-background-color: white; -fx-background-radius: 10px;" styleClass="side-pane-item">
          <children>
-            <Label fx:id="labelPackagingDebt" alignment="CENTER" layoutY="2.0" prefHeight="58.0" prefWidth="100.0" styleClass="card-number" text="-" textFill="#5e5e5e" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <Label fx:id="labelPackagingDept" alignment="CENTER" layoutY="2.0" prefHeight="58.0" prefWidth="100.0" styleClass="card-number" text="16" textFill="#5e5e5e" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <font>
                   <Font size="30.0" />
                </font>
@@ -107,7 +107,7 @@
                   <Insets top="15.0" />
                </padding>
             </Label>
-            <Label fx:id="labelPackagingDebtTitle" alignment="CENTER" layoutX="17.0" layoutY="-13.0" minHeight="35.0" nodeOrientation="LEFT_TO_RIGHT" styleClass="card-heading" text="Dug ambalaže" textFill="WHITE" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="-20.0">
+            <Label alignment="CENTER" layoutX="17.0" layoutY="-13.0" minHeight="35.0" nodeOrientation="LEFT_TO_RIGHT" style="-fx-background-color: #EB707A;" styleClass="card-heading" text="Dug ambalaže" textFill="WHITE" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="-20.0">
                <font>
                   <Font size="18.0" />
                </font>
@@ -126,9 +126,9 @@
             <Insets bottom="30.0" left="10.0" right="10.0" top="30.0" />
          </VBox.margin>
       </AnchorPane>
-      <AnchorPane minHeight="60.0" minWidth="230.0" onMouseClicked="#unfulfilledObligation" style="-fx-background-color: white; -fx-background-radius: 10px;" styleClass="side-pane-item">
+      <AnchorPane minHeight="60.0" minWidth="230.0" onMouseClicked="#packagingDept" style="-fx-background-color: white; -fx-background-radius: 10px;" styleClass="side-pane-item">
          <children>
-            <Label fx:id="labelUnfulfilledObligation" alignment="CENTER" layoutY="2.0" prefHeight="58.0" prefWidth="100.0" styleClass="card-number" text="-" textFill="#5e5e5e" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <Label fx:id="labelPackagingDept1" alignment="CENTER" layoutY="2.0" prefHeight="58.0" prefWidth="100.0" styleClass="card-number" text="16" textFill="#5e5e5e" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <font>
                   <Font size="30.0" />
                </font>
@@ -136,7 +136,7 @@
                   <Insets top="15.0" />
                </padding>
             </Label>
-            <Label fx:id="labelUnfulfilledObligationTitle" alignment="CENTER" layoutX="17.0" layoutY="-13.0" minHeight="35.0" nodeOrientation="LEFT_TO_RIGHT" styleClass="card-heading" text="Ugovorna obaveza" textFill="WHITE" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="-20.0">
+            <Label alignment="CENTER" layoutX="17.0" layoutY="-13.0" minHeight="35.0" nodeOrientation="LEFT_TO_RIGHT" style="-fx-background-color: #EB707A;" styleClass="card-heading" text="Ugovorna obaveza" textFill="WHITE" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="-20.0">
                <font>
                   <Font size="18.0" />
                </font>

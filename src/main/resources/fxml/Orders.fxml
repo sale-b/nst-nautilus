@@ -4,9 +4,6 @@
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ContextMenu?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -26,7 +23,7 @@
                <center>
                   <VBox prefWidth="100.0" BorderPane.alignment="CENTER">
                      <children>
-                        <TableView fx:id="orderTable" minWidth="900.0" nodeOrientation="LEFT_TO_RIGHT" stylesheets="@../styles/Styles.css" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="orderTable" nodeOrientation="LEFT_TO_RIGHT" prefWidth="780.0" stylesheets="@../styles/Styles.css" VBox.vgrow="ALWAYS">
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                            </columnResizePolicy>
@@ -38,26 +35,25 @@
                               </ContextMenu>
                            </contextMenu>
                            <columns>
-                              <TableColumn fx:id="colCustomerName" minWidth="100.0" text="Korisnik" />
-                              <TableColumn fx:id="colCustomerAddress" minWidth="100.0" text="Adresa" />
-                              <TableColumn fx:id="colCustomerPhone" minWidth="100.0" text="Broj telefona" />
-                              <TableColumn fx:id="colCustomerLegalForm" minWidth="75.0" text="Pravna&#10;forma" />
-                              <TableColumn minWidth="75.0" text="Narudžbina">
+                              <TableColumn fx:id="colCustomerName" minWidth="50.0" prefWidth="75.0" text="Korisnik" />
+                              <TableColumn fx:id="colCustomerAddress" minWidth="50.0" prefWidth="75.0" text="Adresa" />
+                              <TableColumn fx:id="colCustomerPhone" minWidth="50.0" prefWidth="75.0" text="Broj telefona" />
+                              <TableColumn prefWidth="75.0" text="Narudžbina">
                                  <columns>
-                                    <TableColumn minWidth="60.0" text="Voda">
+                                    <TableColumn prefWidth="75.0" text="Voda">
                                        <columns>
-                                          <TableColumn fx:id="colWaterSmall" minWidth="30.0" style="-fx-alignment: CENTER;" text="15L" />
-                                          <TableColumn fx:id="colWaterLarge" minWidth="30.0" style="-fx-alignment: CENTER;" text="19L" />
+                                          <TableColumn fx:id="colWaterSmall" prefWidth="75.0" style="-fx-alignment: CENTER;" text="15L" />
+                                          <TableColumn fx:id="colWaterLarge" prefWidth="75.0" style="-fx-alignment: CENTER;" text="19L" />
                                        </columns>
                                     </TableColumn>
-                                    <TableColumn fx:id="colGlasses" minWidth="35.0" style="-fx-alignment: CENTER;" text="Čaše" />
+                                    <TableColumn fx:id="colGlasses" prefWidth="75.0" style="-fx-alignment: CENTER;" text="Čaše" />
                                  </columns>
                               </TableColumn>
-                              <TableColumn fx:id="colOrderTotalPrice" minWidth="70.0" text="Ukupna&#10;cena (sa PDV)" />
-                              <TableColumn fx:id="colOrderDeliveredBy" minWidth="125.0" style="-fx-alignment: CENTER;" text="Dostavu &#10;izvršila &#10;smena" />
-                              <TableColumn fx:id="colOrderPaid" minWidth="75.0" style="-fx-alignment: CENTER;" text="Dostava &#10;novčano &#10;razdužena" />
-                              <TableColumn fx:id="colOrderNote" minWidth="100.0" text="Napomena" />
-                              <TableColumn fx:id="colOrderEdit" minWidth="50.0" style="-fx-alignment: CENTER;" text="Izmeni" />
+                              <TableColumn fx:id="colOrderTotalPrice" minWidth="50.0" prefWidth="75.0" text="Ukupna&#10;cena" />
+                              <TableColumn fx:id="colOrderDeliveredBy" minWidth="100.0" prefWidth="100.0" style="-fx-alignment: CENTER;" text="Dostavu &#10;izvršila &#10;smena" />
+                              <TableColumn fx:id="colOrderPaid" minWidth="50.0" prefWidth="75.0" style="-fx-alignment: CENTER;" text="Dostava &#10;novčano &#10;razdužena" />
+                              <TableColumn fx:id="colOrderNote" minWidth="100.0" prefWidth="100.0" text="Napomena" />
+                              <TableColumn fx:id="colOrderEdit" minWidth="50.0" prefWidth="50.0" text="Izmeni" />
                            </columns>
                         </TableView>
                      </children>
@@ -72,59 +68,38 @@
                <top>
                   <HBox prefHeight="30.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Label text="Mesto:">
-                           <HBox.margin>
-                              <Insets bottom="7.0" left="10.0" top="7.0" />
-                           </HBox.margin>
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                           <padding>
-                              <Insets right="10.0" />
-                           </padding>
-                        </Label>
-                        <TextField fx:id="citySearch" onAction="#search" onKeyReleased="#search" prefHeight="25.0" prefWidth="200.0">
+                        <TextField fx:id="searchBox" onAction="#search" onKeyReleased="#search" prefHeight="25.0" prefWidth="463.0">
                            <HBox.margin>
                               <Insets bottom="7.0" top="7.0" />
                            </HBox.margin>
                         </TextField>
-                        <DatePicker fx:id="date" prefHeight="30.0" prefWidth="150.0" promptText="Datum porudžbine">
-                           <opaqueInsets>
-                              <Insets />
-                           </opaqueInsets>
+                        <FontAwesomeIconView glyphName="SEARCH" size="18">
                            <HBox.margin>
-                              <Insets bottom="7.0" left="30.0" top="7.0" />
+                              <Insets left="5.0" top="10.0" />
                            </HBox.margin>
-                        </DatePicker>
-                        <HBox nodeOrientation="RIGHT_TO_LEFT" HBox.hgrow="ALWAYS">
-                           <children>
-                              <JFXButton fx:id="delete" contentDisplay="RIGHT" onAction="#deleteOrders" prefHeight="30.0" prefWidth="100.0" styleClass="delete-button" text="Ukloni" textFill="WHITE">
-                                 <graphic>
-                                    <FontAwesomeIconView fill="WHITE" glyphName="REMOVE" size="15" />
-                                 </graphic>
-                                 <HBox.margin>
-                                    <Insets right="10.0" top="5.0" />
-                                 </HBox.margin>
-                                 <font>
-                                    <Font size="12.0" />
-                                 </font>
-                              </JFXButton>
-                              <JFXButton fx:id="add" contentDisplay="RIGHT" onAction="#addOrder" prefHeight="30.0" prefWidth="100.0" styleClass="add-button" text="Dodaj" textFill="WHITE">
-                                 <graphic>
-                                    <FontAwesomeIconView fill="WHITE" glyphName="PLUS" size="15" />
-                                 </graphic>
-                                 <font>
-                                    <Font size="12.0" />
-                                 </font>
-                                 <HBox.margin>
-                                    <Insets right="10.0" top="5.0" />
-                                 </HBox.margin>
-                              </JFXButton>
-                           </children>
+                        </FontAwesomeIconView>
+                        <JFXButton fx:id="add" onAction="#addOrder" prefHeight="30.0" prefWidth="100.0" style="-fx-background-radius: 5px; -fx-background-color: green;" text="Dodaj" textFill="WHITE">
+                           <graphic>
+                              <FontAwesomeIconView fill="WHITE" glyphName="PLUS" size="15" />
+                           </graphic>
+                           <font>
+                              <Font size="12.0" />
+                           </font>
                            <HBox.margin>
-                              <Insets right="260.0" />
+                              <Insets left="80.0" top="5.0" />
                            </HBox.margin>
-                        </HBox>
+                        </JFXButton>
+                        <JFXButton fx:id="delete" onAction="#deleteOrders" prefHeight="30.0" prefWidth="100.0" style="-fx-background-radius: 5px; -fx-background-color: red;" text="Ukloni" textFill="WHITE">
+                           <graphic>
+                              <FontAwesomeIconView fill="WHITE" glyphName="REMOVE" size="15" />
+                           </graphic>
+                           <HBox.margin>
+                              <Insets left="10.0" top="5.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font size="12.0" />
+                           </font>
+                        </JFXButton>
                      </children>
                      <padding>
                         <Insets top="20.0" />
@@ -135,23 +110,6 @@
                   </HBox>
                </top>
             </BorderPane>
-            <JFXButton fx:id="dropDownButton" blendMode="MULTIPLY" graphicTextGap="0.0" onAction="#dropDownButton" prefHeight="23.0" prefWidth="24.0" style="-fx-background-radius: 0 5px 5px 0; -fx-border-width: 0 0 0 1px; -fx-border-color: silver;" styleClass="drop-down-button" text="" AnchorPane.leftAnchor="254.0" AnchorPane.topAnchor="28.0">
-               <graphic>
-                  <FontAwesomeIconView fill="#575757" glyphName="CARET_DOWN" size="18" styleClass="drop-down-icon" />
-               </graphic>
-               <font>
-                  <Font size="1.0" />
-               </font>
-            </JFXButton>
-            <JFXButton id="clear-search-button" fx:id="clearSearchButton" blendMode="MULTIPLY" graphicTextGap="0.0" layoutX="10.0" layoutY="10.0" onAction="#clearSearchButton" prefHeight="23.0" prefWidth="24.0" ripplerFill="WHITE" style="-fx-background-color: transparent;" stylesheets="@../styles/Styles.css" text="" visible="false" AnchorPane.leftAnchor="230.0" AnchorPane.topAnchor="28.0">
-               <graphic>
-                  <FontAwesomeIconView fill="#e36e6e" glyphName="CLOSE" size="14" styleClass="drop-down-icon" />
-               </graphic>
-               <font>
-                  <Font size="1.0" />
-               </font>
-            </JFXButton>
-            <ListView fx:id="cityList" layoutX="10.0" layoutY="10.0" onMouseClicked="#citySelect" prefHeight="0.0" prefWidth="200.0" visible="false" AnchorPane.leftAnchor="78.0" AnchorPane.topAnchor="52.0" />
          </children>
       </AnchorPane>
    </content>

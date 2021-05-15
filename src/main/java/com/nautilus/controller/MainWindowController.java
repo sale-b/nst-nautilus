@@ -52,59 +52,43 @@ public class MainWindowController extends StackPane {
     private Button bt4;
 
     @FXML
-    private Button bt5;
-
-    @FXML
     void customersPage(ActionEvent event) {
         FxmlViewComponent userViewComponent = StageManager.getComponentWithController(FxmlView.CUSTOMER);
         mainPane.setCenter(userViewComponent.getRoot());
-        restoreIsButtonPressed();
-        bt1.pseudoClassStateChanged(PseudoClass.getPseudoClass("pressed"), true);
     }
 
     @FXML
     void ordersPage(ActionEvent event) {
         FxmlViewComponent userViewComponent = StageManager.getComponentWithController(FxmlView.ORDER);
         mainPane.setCenter(userViewComponent.getRoot());
-        restoreIsButtonPressed();
-        bt2.pseudoClassStateChanged(PseudoClass.getPseudoClass("pressed"), true);
+        bt1.pseudoClassStateChanged(PseudoClass.getPseudoClass("pressed"), false);
     }
 
     @FXML
     void articlesPage(ActionEvent event) {
         FxmlViewComponent userViewComponent = StageManager.getComponentWithController(FxmlView.ARTICLE);
         mainPane.setCenter(userViewComponent.getRoot());
-        restoreIsButtonPressed();
-        bt3.pseudoClassStateChanged(PseudoClass.getPseudoClass("pressed"), true);
+        bt1.pseudoClassStateChanged(PseudoClass.getPseudoClass("pressed"), false);
     }
 
     @FXML
     void packagingPage(ActionEvent event) {
         FxmlViewComponent userViewComponent = StageManager.getComponentWithController(FxmlView.PACKAGING);
         mainPane.setCenter(userViewComponent.getRoot());
-        restoreIsButtonPressed();
-        bt4.pseudoClassStateChanged(PseudoClass.getPseudoClass("pressed"), true);
+        bt1.pseudoClassStateChanged(PseudoClass.getPseudoClass("pressed"), false);
     }
 
     @FXML
     void sanitizePage(ActionEvent event) {
         FxmlViewComponent userViewComponent = StageManager.getComponentWithController(FxmlView.SANITIZE);
         mainPane.setCenter(userViewComponent.getRoot());
-        restoreIsButtonPressed();
-        bt5.pseudoClassStateChanged(PseudoClass.getPseudoClass("pressed"), true);
+        bt1.pseudoClassStateChanged(PseudoClass.getPseudoClass("pressed"), false);
     }
 
     public MainWindowController() {
         StageManager.getComponentWithController(FxmlView.MAIN_WINDOW, this, this);
     }
 
-    private void restoreIsButtonPressed() {
-        bt1.pseudoClassStateChanged(PseudoClass.getPseudoClass("pressed"), false);
-        bt2.pseudoClassStateChanged(PseudoClass.getPseudoClass("pressed"), false);
-        bt3.pseudoClassStateChanged(PseudoClass.getPseudoClass("pressed"), false);
-        bt4.pseudoClassStateChanged(PseudoClass.getPseudoClass("pressed"), false);
-        bt5.pseudoClassStateChanged(PseudoClass.getPseudoClass("pressed"), false);
-    }
 
     public void initActions() {
 
@@ -126,7 +110,6 @@ public class MainWindowController extends StackPane {
         customerController = (CustomerController) userViewComponent.getController();
         mainPane.requestFocus();
         bt1.pseudoClassStateChanged(PseudoClass.getPseudoClass("pressed"), true);
-        topLabel.setText(FxmlView.MAIN_WINDOW.getTitle());
 
     }
 

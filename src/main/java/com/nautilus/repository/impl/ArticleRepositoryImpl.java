@@ -2,7 +2,6 @@ package com.nautilus.repository.impl;
 
 import com.nautilus.domain.Article;
 import com.nautilus.repository.ArticleRepository;
-import com.nautilus.util.Queries;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -25,8 +24,13 @@ import java.util.Optional;
 @Slf4j
 public class ArticleRepositoryImpl implements ArticleRepository {
 
+    private final static String SELECT_ALL_ARTICLES = "SELECT * from article order by id";
+    private final static String SELECT_ARTICLE_BY_ID = "select * from article where id = ?";
+    private final static String INSERT_ARTICLE = "INSERT into article (name, price) VALUES (?,?)";
+    private final static String UPDATE_ARTICLE_BY_ID = "UPDATE article SET name=?, price=?, modified_on=current_timestamp WHERE id=? and modified_on=?";
+    private final static String DELETE_ARTICLE_BY_ID = "DELETE FROM article WHERE id=? AND mandatory=false";
+    private final static String SELECT_ARTICLES_BY_TEXT_FIELDS = "select * from article where lower(name) like ?";
 
-    private final String QUERIES_FILE = "dbqueries/article-queries.properties";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -40,10 +44,9 @@ public class ArticleRepositoryImpl implements ArticleRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection
-                    .prepareStatement(Queries.getQuery(QUERIES_FILE, "INSERT_ARTICLE"), Statement.RETURN_GENERATED_KEYS);
+                    .prepareStatement(INSERT_ARTICLE, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, article.getName());
             ps.setDouble(2, article.getPrice());
-            ps.setDouble(3, article.getTax());
             return ps;
         }, keyHolder);
 
@@ -54,13 +57,13 @@ public class ArticleRepositoryImpl implements ArticleRepository {
     @Transactional
     @Override
     public List<Article> getAll() {
-        return jdbcTemplate.query(Queries.getQuery(QUERIES_FILE, "SELECT_ALL_ARTICLES"), new ArticleMapper());
+        return jdbcTemplate.query(SELECT_ALL_ARTICLES, new ArticleMapper());
     }
 
     @Transactional
     @Override
     public Article findById(Long id) {
-        return jdbcTemplate.queryForObject(Queries.getQuery(QUERIES_FILE, "SELECT_ARTICLE_BY_ID"), new ArticleMapper(), id);
+        return jdbcTemplate.queryForObject(SELECT_ARTICLE_BY_ID, new ArticleMapper(), id);
     }
 
     @Transactional
@@ -69,12 +72,11 @@ public class ArticleRepositoryImpl implements ArticleRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection
-                    .prepareStatement(Queries.getQuery(QUERIES_FILE, "UPDATE_ARTICLE_BY_ID"), Statement.RETURN_GENERATED_KEYS);
+                    .prepareStatement(UPDATE_ARTICLE_BY_ID, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, article.getName());
             ps.setDouble(2, article.getPrice());
-            ps.setDouble(3, article.getTax());
-            ps.setLong(4, article.getId());
-            ps.setTimestamp(5, Timestamp.valueOf(article.getModifiedOn()));
+            ps.setLong(3, article.getId());
+            ps.setTimestamp(4, Timestamp.valueOf(article.getModifiedOn()));
             return ps;
         }, keyHolder);
         if (keyHolder.getKeys() == null)
@@ -85,13 +87,13 @@ public class ArticleRepositoryImpl implements ArticleRepository {
     @Transactional
     @Override
     public void deleteById(Article article) {
-        jdbcTemplate.update(Queries.getQuery(QUERIES_FILE, "DELETE_ARTICLE_BY_ID"),
+        jdbcTemplate.update(DELETE_ARTICLE_BY_ID,
                 article.getId());
     }
 
     @Override
     public List<Article> findByTextFields(String text) {
-        return jdbcTemplate.query(Queries.getQuery(QUERIES_FILE, "SELECT_ARTICLES_BY_TEXT_FIELDS"), new ArticleMapper(), "%" + text + "%");
+        return jdbcTemplate.query(SELECT_ARTICLES_BY_TEXT_FIELDS, new ArticleMapper(), "%" + text + "%");
     }
 
     @Transactional
@@ -108,7 +110,6 @@ public class ArticleRepositoryImpl implements ArticleRepository {
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getDouble("price"),
-                    rs.getDouble("tax"),
                     rs.getBoolean("mandatory"),
                     rs.getTimestamp("created_on") != null ? rs.getTimestamp("created_on").toLocalDateTime() : null,
                     rs.getTimestamp("modified_on") != null ? rs.getTimestamp("modified_on").toLocalDateTime() : null

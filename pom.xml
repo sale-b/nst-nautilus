@@ -10,24 +10,25 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mainClass>com.nautilus.MainApp</mainClass>
+        <springVersion>5.3.1</springVersion>
     </properties>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.15</version>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.20</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>5.3.1</version>
+            <version>${springVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
-            <version>5.3.1</version>
+            <version>${springVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -40,13 +41,47 @@
             <artifactId>liquibase-core</artifactId>
             <version>4.3.1</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
             <version>1.20</version>
         </dependency>
-
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>5.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna-platform</artifactId>
+            <version>5.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>de.jensd</groupId>
+            <artifactId>fontawesomefx</artifactId>
+            <version>8.9</version>
+        </dependency>
+        <dependency>
+            <groupId>se.alipsa</groupId>
+            <artifactId>fx-yearmonth-picker</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.jfoenix/jfoenix -->
+        <dependency>
+            <groupId>com.jfoenix</groupId>
+            <artifactId>jfoenix</artifactId>
+            <version>8.0.10</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -101,29 +136,6 @@
                     <changeLogFile>${project.build.directory}/classes/changelog/db.changelog-master.yaml</changeLogFile>
                 </configuration>
             </plugin>
-            <!--            <plugin>-->
-            <!--                <groupId>org.liquibase</groupId>-->
-            <!--                <artifactId>liquibase-maven-plugin</artifactId>-->
-            <!--                <version>3.9.0</version>-->
-            <!--                <configuration>-->
-            <!--                    <propertyFile>liquibase.properties</propertyFile>-->
-            <!--                </configuration>-->
-            <!--                <dependencies>-->
-            <!--                    <dependency>-->
-            <!--                        <groupId>mysql</groupId>-->
-            <!--                        <artifactId>mysql-connector-java</artifactId>-->
-            <!--                        <version>8.0.15</version>-->
-            <!--                    </dependency>-->
-            <!--                </dependencies>-->
-            <!--                <executions>-->
-            <!--                    <execution>-->
-            <!--                        <goals>-->
-            <!--                            <goal>update</goal>-->
-            <!--                        </goals>-->
-            <!--                        <phase>process-resources</phase>-->
-            <!--                    </execution>-->
-            <!--                </executions>-->
-            <!--            </plugin>-->
         </plugins>
     </build>
 </project>

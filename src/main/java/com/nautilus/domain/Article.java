@@ -4,29 +4,22 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-import static com.nautilus.util.Formatter.formatPrice;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
-public class Article extends BaseEntity{
+@EqualsAndHashCode
+public class Article {
+    private Long id;
     private String name;
     private Double price;
-    private Double tax;
     private Boolean mandatory;
-
-    public Article(long id, String name, double price, Double tax, boolean mandatory, LocalDateTime createdOn, LocalDateTime modifiedOn) {
-        this(name, price, tax, mandatory);
-        this.id = id;
-        this.createdOn = createdOn;
-        this.modifiedOn=modifiedOn;
-    }
+    private LocalDateTime createdOn;
+    private LocalDateTime modifiedOn;
 
     @Override
     public String toString() {
-        return String.format("%s - %s", this.name, formatPrice(this.price));
+        return String.format("%s - %.02f din.", this.name, this.price);
     }
 
 }

@@ -1,11 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.nautilus.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
@@ -17,24 +12,27 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import java.util.Objects;
 
-/**
- * @author laptop-02
- */
 @ComponentScan(basePackages = {
         "com.nautilus.repository",
         "com.nautilus.service"})
 @EnableTransactionManagement
 @PropertySource("classpath:application.properties")
+@EnableEncryptableProperties
 public class Config {
 
-    @Autowired
+    public Config(Environment env) {
+        this.env = env;
+    }
+
     Environment env;
 
     @Bean
     public DataSource dataSource() {
+        System.setProperty("jasypt.encryptor.password", "Secret Key");
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
+        dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("spring.datasource.driver-class-name")));
         dataSource.setUrl(env.getProperty("spring.datasource.url"));
         dataSource.setUsername(env.getProperty("spring.datasource.username"));
         dataSource.setPassword(env.getProperty("spring.datasource.password"));
@@ -42,8 +40,8 @@ public class Config {
     }
 
     @Bean
-    public JdbcTemplate jdbcTemplate() {
-        return new JdbcTemplate(dataSource());
+    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
     }
 
     @Bean
