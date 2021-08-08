@@ -12,6 +12,8 @@ import com.nautilus.util.Formatter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +30,11 @@ public class OrderServiceImpl implements OrderService {
 
     final
     CustomerService customerService;
+
+    @PostConstruct
+    public void init() {
+        customerService.setOrderService(this);
+    }
 
     public OrderServiceImpl(OrderItemService orderItemService, OrderRepository orderRepository, CustomerService customerService) {
         this.orderItemService = orderItemService;
@@ -47,9 +54,8 @@ public class OrderServiceImpl implements OrderService {
         List<OrderItem> unsavedItems = obj.getItems();
         obj.clearItems();
         unsavedItems.forEach(item -> savedOrder.addItem(orderItemService.insert(item)));
-        updateCustomersObligations(obj.getCustomer(), obj);
-        updateCustomersPackagingFlags(obj.getCustomer());
-        customerService.update(obj.getCustomer());
+        updateCustomersObligations(savedOrder.getCustomer(), savedOrder);
+        customerService.update(savedOrder.getCustomer());
         return savedOrder;
     }
 
@@ -61,8 +67,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDto> getAllDto() {
-        return orderRepository.getAllDto();
+    public List<OrderDto> getAllDto(LocalDate date, String city) {
+        return orderRepository.getAllDto(date, city);
     }
 
     @Override
@@ -75,18 +81,15 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Optional<Order> update(Order obj) {
         Order oldOrder = this.findById(obj.getId());
-        Optional<Order> updatedOrder = orderRepository.update(obj);
-        if (updatedOrder.isPresent()) {
-            List<OrderItem> unsavedItems = obj.getItems();
-            updatedOrder.get().clearItems();
-            orderItemService.deleteAllByOrderId(obj.getId());
-            unsavedItems.forEach(orderItem -> updatedOrder.get().addItem(orderItemService.insert(orderItem)));
-            revertCustomersObligations(updatedOrder.get().getCustomer(), oldOrder);
-            updateCustomersObligations(updatedOrder.get().getCustomer(), updatedOrder.get());
-            updateCustomersPackagingFlags(obj.getCustomer());
-            customerService.update(obj.getCustomer());
-        }
-        return updatedOrder;
+        orderRepository.update(obj);
+        List<OrderItem> unsavedItems = obj.getItems();
+        obj.clearItems();
+        orderItemService.deleteAllByOrderId(obj.getId());
+        unsavedItems.forEach(orderItem -> obj.addItem(orderItemService.insert(orderItem)));
+        revertCustomersObligations(obj.getCustomer(), oldOrder);
+        updateCustomersObligations(obj.getCustomer(), obj);
+        customerService.update(obj.getCustomer());
+        return Optional.of(obj);
     }
 
     @Override
@@ -95,7 +98,6 @@ public class OrderServiceImpl implements OrderService {
             Order order = this.findById(orderDto.getId());
             orderRepository.deleteById(order);
             revertCustomersObligations(order.getCustomer(), order);
-            updateCustomersPackagingFlags(order.getCustomer());
             customerService.update(order.getCustomer());
         });
     }
@@ -103,13 +105,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void deleteAllDto(Iterable<OrderDto> obj) {
         List<Order> orders = new ArrayList<>();
-        obj.forEach(orderDto -> orders.add(mapToOrder(orderDto)));
+        obj.forEach(orderDto -> {
+            if (orderDto.getDeliveredBy().equals(Order.DeliveredBy.NONE.toString())) {
+                orders.add(mapToOrder(orderDto));
+            }
+        });
         this.deleteAll(orders);
-    }
-
-    @Override
-    public List<Order> getAllByCustomerIdOrderByDate(Long customerId) {
-        return orderRepository.getAllByCustomerIdOrderByDate(customerId);
     }
 
     private void updateCustomersObligations(Customer customer, Order order) {
@@ -119,7 +120,7 @@ public class OrderServiceImpl implements OrderService {
 
         }
         if (!order.getDeliveredBy().equals(Order.DeliveredBy.NONE) && !order.getPayed()) {
-            customer.setDebt(customer.getDebt() + ((Double) order.getItems().stream().map(orderItem -> orderItem.getArticlePrice() * orderItem.getQuantity()).mapToDouble(Double::doubleValue).sum()));
+            customer.setDebt(customer.getDebt() + ((Double) order.getItems().stream().map(orderItem -> orderItem.getArticlePrice() * (1 + orderItem.getArticleTax() / 100) * orderItem.getQuantity()).mapToDouble(Double::doubleValue).sum()));
         }
     }
 
@@ -129,15 +130,7 @@ public class OrderServiceImpl implements OrderService {
             customer.setPackagingLarge(customer.getPackagingLarge() - order.findOrderItemByArticleName(Formatter.WATER_LARGE).map(OrderItem::getQuantity).orElse(0));
         }
         if (!order.getDeliveredBy().equals(Order.DeliveredBy.NONE) && !order.getPayed()) {
-            customer.setDebt(customer.getDebt() - ((Double) order.getItems().stream().map(orderItem -> orderItem.getArticlePrice() * orderItem.getQuantity()).mapToDouble(Double::doubleValue).sum()));
-        }
-    }
-
-    private void updateCustomersPackagingFlags(Customer customer) {
-        Optional<Order> lastOrder = orderRepository.getCustomersLastOrder(customer.getId());
-        if (lastOrder.isPresent()) {
-            customer.setBacklogPackagingSmall(customer.getPackagingSmall() > lastOrder.get().getPackagingDebtSmall());
-            customer.setBacklogPackagingLarge(customer.getPackagingLarge() > lastOrder.get().getPackagingDebtLarge());
+            customer.setDebt(customer.getDebt() - ((Double) order.getItems().stream().map(orderItem -> orderItem.getArticlePrice() * (1 + orderItem.getArticleTax() / 100) * orderItem.getQuantity()).mapToDouble(Double::doubleValue).sum()));
         }
     }
 

@@ -4,6 +4,7 @@ import com.nautilus.config.Config;
 import com.nautilus.controller.ArticleController;
 import com.nautilus.domain.Article;
 import com.nautilus.service.ArticleService;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,6 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import static com.nautilus.util.Formatter.*;
 import static com.nautilus.util.Validation.*;
 
 
@@ -33,7 +36,7 @@ public class ArticleDialogController implements Initializable {
     private ArticleController articleController;
 
     @FXML
-    private Button cancel;
+    private FontAwesomeIconView cancel;
 
     @FXML
     @Getter
@@ -47,6 +50,9 @@ public class ArticleDialogController implements Initializable {
     @Getter
     private TextField price;
 
+    @FXML
+    @Getter
+    private TextField tax;
 
     @FXML
     private Button reset;
@@ -57,16 +63,15 @@ public class ArticleDialogController implements Initializable {
     @Setter
     private Article article = null;
 
-    private boolean reloadUserDetailsNeeded = false;
+    private boolean reloadArticleDetailsNeeded = false;
 
     private final ApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
     private final ArticleService articleService = (ArticleService) context.getBean("articleServiceImpl");
 
-    //todo
     @FXML
-    void cancel(ActionEvent event) {
+    void cancel(MouseEvent event) {
         ((Node) (event.getSource())).getScene().getWindow().hide();
-        if (reloadUserDetailsNeeded)
+        if (reloadArticleDetailsNeeded)
             articleController.loadArticleDetails();
     }
 
@@ -78,8 +83,9 @@ public class ArticleDialogController implements Initializable {
 
     @FXML
     private void saveArticle(ActionEvent event) {
-        if (emptyValidation(getNameValue().isEmpty(), "article name") &&
-                validateDouble(getPriceValue(), "price")) {
+        if (emptyValidation(getNameValue().isEmpty(), "naziv artikla")
+                && validateDouble(getPriceValue(), "cena")
+                && validateDouble(getTaxValue(), "PDV")) {
             if (this.article == null) {
                 article = new Article();
                 fillArticleFields(article);
@@ -89,17 +95,18 @@ public class ArticleDialogController implements Initializable {
                 articleController.loadArticleDetails();
             } else {
                 fillArticleFields(article);
-                Optional<Article> updatedUser = articleService.update(article);
-                if (updatedUser.isPresent()) {
-//                    updateAlertSuccess(updatedUser.get());
+                Optional<Article> updatedArticle = articleService.update(article);
+                if (updatedArticle.isPresent()) {
+//                    updateAlertSuccess(updatedArticle.get());
                     ((Node) (event.getSource())).getScene().getWindow().hide();
                     articleController.loadArticleDetails();
                 } else {
                     updateAlertFail("Artikal");
-                    reloadUserDetailsNeeded = true;
+                    reloadArticleDetailsNeeded = true;
                     article = articleService.findById(this.article.getId());
                     name.setText(article.getName());
-                    price.setText(article.getPrice().toString());
+                    price.setText(formatDouble(article.getPrice()));
+                    tax.setText(formatDouble(article.getTax()));
                 }
             }
 
@@ -110,6 +117,7 @@ public class ArticleDialogController implements Initializable {
     private void fillArticleFields(Article article) {
         article.setName(StringUtils.capitalize(getNameValue()));
         article.setPrice(Double.parseDouble(getPriceValue()));
+        article.setTax(Double.parseDouble(getTaxValue()));
     }
 
     @Override
@@ -123,6 +131,10 @@ public class ArticleDialogController implements Initializable {
 
     public String getPriceValue() {
         return price.getText();
+    }
+
+    public String getTaxValue() {
+        return tax.getText();
     }
 
 

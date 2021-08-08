@@ -1,5 +1,6 @@
 package com.nautilus.domain.dto;
 
+import com.nautilus.domain.Customer;
 import lombok.*;
 
 @NoArgsConstructor
@@ -16,6 +17,7 @@ public class OrderDto {
     private String address;
     private String phone;
     private String city;
+    private Customer.LegalForm legalForm;
     private String waterSmall;
     private String waterLarge;
     private String glasses;

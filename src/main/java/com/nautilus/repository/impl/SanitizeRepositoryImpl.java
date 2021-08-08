@@ -49,6 +49,8 @@ public class SanitizeRepositoryImpl implements SanitizeRepository {
         }, keyHolder);
 
         sanitize.setId((Long) (Objects.requireNonNull(keyHolder.getKeys()).get("id")));
+        sanitize.setCreatedOn(((Timestamp) Objects.requireNonNull(keyHolder.getKeys()).get("created_on")).toLocalDateTime());
+        sanitize.setModifiedOn(((Timestamp) Objects.requireNonNull(keyHolder.getKeys()).get("modified_on")).toLocalDateTime());
         return sanitize;
     }
 
@@ -77,8 +79,11 @@ public class SanitizeRepositoryImpl implements SanitizeRepository {
             ps.setTimestamp(4, Timestamp.valueOf(sanitize.getModifiedOn()));
             return ps;
         }, keyHolder);
-        if (keyHolder.getKeys() == null)
+        if (keyHolder.getKeys() == null) {
             return Optional.empty();
+        } else {
+            sanitize.setModifiedOn(((Timestamp) Objects.requireNonNull(keyHolder.getKeys()).get("modified_on")).toLocalDateTime());
+        }
         return Optional.of(sanitize);
     }
 

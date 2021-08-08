@@ -1,12 +1,12 @@
 databaseChangeLog:
 
   - changeSet:
-      id: users
+      id: tables
       author: aleksandar.brankovic
 
       changes:
         - sql:
-          comment: Create table customer, article
+          comment: Create all tables
           strip-comments: true
           sql: |
 
@@ -16,14 +16,12 @@ databaseChangeLog:
             address varchar(255) not null,
             city varchar(255) not null,
             phone varchar(30) not null,
-            date date not null,
-            type varchar(30),
-            sanitise_period smallint not null,
+            date date,
+            legal_form varchar(30) not null,
+            sanitise_period smallint,
             debt decimal default 0 not null,
             packaging_small integer default 0 not null,
             packaging_large integer default 0 not null,
-            backlog_packaging_small boolean default false not null,
-            backlog_packaging_large boolean default false not null,
             created_on timestamp default current_timestamp not null,
             modified_on timestamp default current_timestamp not null
             );
@@ -32,27 +30,26 @@ databaseChangeLog:
             id bigserial primary key,
             name varchar(255) unique not null,
             price decimal not null,
+            tax decimal not null,
             mandatory boolean default false not null,
             created_on timestamp default current_timestamp not null,
             modified_on timestamp default current_timestamp not null
             );
 
-            insert into article (name, price, mandatory)
-            values ('Voda 15L', 0, true);
-            insert into article (name, price, mandatory)
-            values ('Voda 19L', 0, true);
-            insert into article (name, price, mandatory)
-            values ('Čaše', 0, true);
+            insert into article (name, price, tax, mandatory)
+            values ('Voda 15L', 0, 20, true);
+            insert into article (name, price, tax, mandatory)
+            values ('Voda 19L', 0, 20, true);
+            insert into article (name, price, tax, mandatory)
+            values ('Čaše', 0, 20, true);
 
             create table "order" (
             id bigserial primary key,
             date date not null,
             delivered_by varchar(30) not null,
             payed boolean not null,
-            packaging_debt_small integer not null,
-            packaging_debt_large integer not null,
             note text,
-            customer_id integer,
+            customer_id bigint,
             created_on timestamp default current_timestamp not null,
             modified_on timestamp default current_timestamp not null,
             constraint fk_customer
@@ -61,11 +58,37 @@ databaseChangeLog:
               on delete cascade
             );
 
+            create table packaging (
+            id bigserial primary key,
+            date date not null,
+            water_small_returned integer not null,
+            water_large_returned integer not null,
+            customer_id bigint,
+            created_on timestamp default current_timestamp not null,
+            modified_on timestamp default current_timestamp not null,
+            constraint fk_customer
+              foreign key(customer_id)
+              references customer(id)
+              on delete cascade
+            );
+
+            create table sanitize (
+            id bigserial primary key,
+            date date not null,
+            customer_id bigint,
+            created_on timestamp default current_timestamp not null,
+            modified_on timestamp default current_timestamp not null,
+            constraint fk_customer
+              foreign key(customer_id)
+              references customer(id)
+              on delete cascade
+            );
 
             create table order_item (
             id bigserial primary key,
             article_name varchar(255) not null,
             article_price decimal not null,
+            article_tax decimal not null,
             quantity integer not null,
             order_id bigint,
             created_on timestamp default current_timestamp not null,
@@ -76,24 +99,34 @@ databaseChangeLog:
               on delete cascade
             );
 
-            INSERT INTO public.customer
-            ("name", address, city, phone, "date", "type", sanitise_period, debt, packaging_small, packaging_large, created_on, modified_on)
-            VALUES('Miloje Mikic', 'Sutjeka 2', 'Beograd', '06486523', CURRENT_TIMESTAMP::DATE, 'LEGAL_ENTITY', 5, 501.0, 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+            CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
-            INSERT INTO public.customer
-            ("name", address, city, phone, "date", "type", sanitise_period, created_on, modified_on)
-            VALUES('Zivorad Zikic', 'Zelengorska 16', 'Pozarevac', '061453254', CURRENT_TIMESTAMP::DATE, 'INDIVIDUAL', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+            CREATE INDEX customer_name_trgn
+                ON customer USING gin(lower(name) gin_trgm_ops);
 
-            INSERT INTO public."order"
-            ("date", delivered_by, payed, packaging_debt_small, packaging_debt_large, note, customer_id, created_on, modified_on)
-            VALUES(CURRENT_TIMESTAMP::DATE, 'FIRST', false, 2, 1, 'Nista posebno', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+            CREATE INDEX customer_address_trgn
+                ON customer USING gin(lower(address) gin_trgm_ops);
 
-            INSERT INTO public.order_item
-            (article_name, article_price, quantity, order_id, created_on, modified_on)
-            VALUES('Voda 15L', 100.50, 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+            CREATE INDEX customer_phone_trgn
+                ON customer USING gin(lower(phone) gin_trgm_ops);
 
-            INSERT INTO public.order_item
-            (article_name, article_price, quantity, order_id, created_on, modified_on)
-            VALUES('Voda 19L', 300, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+            CREATE INDEX customer_city_trgn
+                ON customer USING gin(lower(city) gin_trgm_ops);
 
+            CREATE INDEX customer_name
+                ON customer (lower(name));
 
+            CREATE INDEX customer_address
+                ON customer (lower(address));
+
+            CREATE INDEX customer_phone
+                ON customer (lower(phone));
+
+            CREATE INDEX customer_city
+                ON customer (lower(city));
+
+            CREATE INDEX customer_date
+                ON customer (date);
+
+            CREATE INDEX order_date
+                ON "order" (date);

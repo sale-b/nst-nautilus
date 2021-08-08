@@ -2,6 +2,7 @@ package com.nautilus.repository.impl;
 
 import com.nautilus.domain.OrderItem;
 import com.nautilus.repository.OrderItemRepository;
+import com.nautilus.util.Queries;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -24,13 +25,7 @@ import java.util.Optional;
 @Slf4j
 public class OrderItemRepositoryImpl implements OrderItemRepository {
 
-    private final static String SELECT_ALL_ORDER_ITEMS = "SELECT * from order_item order by id";
-    private final static String SELECT_ALL_ORDER_ITEMS_BY_ORDER_ID = "SELECT * from order_item where order_id = ? order by id";
-    private final static String SELECT_ORDER_ITEM_BY_ID = "select * from order_item where id = ?";
-    private final static String INSERT_ORDER_ITEM = "INSERT into order_item (article_name, article_price, quantity, order_id) VALUES (?,?,?,?)";
-    private final static String UPDATE_ORDER_ITEM_BY_ID = "UPDATE order_item SET article_name=?, article_price=?, quantity=?,order_id=?, modified_on=current_timestamp WHERE id=? and modified_on=?";
-    private final static String DELETE_ORDER_ITEM_BY_ID = "DELETE FROM order_item WHERE id=?";
-    private final static String DELETE_ORDER_ITEM_BY_ORDER_ID = "DELETE FROM order_item WHERE order_id=?";
+    private final String QUERIES_FILE = "dbqueries/order-item-queries.properties";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -43,15 +38,19 @@ public class OrderItemRepositoryImpl implements OrderItemRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection
-                    .prepareStatement(INSERT_ORDER_ITEM, Statement.RETURN_GENERATED_KEYS);
+                    .prepareStatement(Queries.getQuery(QUERIES_FILE, "INSERT_ORDER_ITEM"), Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, orderItem.getArticleName());
             ps.setDouble(2, orderItem.getArticlePrice());
-            ps.setInt(3, orderItem.getQuantity());
-            ps.setLong(4, orderItem.getOrder().getId());
+            ps.setDouble(3, orderItem.getArticleTax());
+            ps.setInt(4, orderItem.getQuantity());
+            ps.setLong(5, orderItem.getOrder().getId());
             return ps;
         }, keyHolder);
 
         orderItem.setId((Long) (Objects.requireNonNull(keyHolder.getKeys()).get("id")));
+        orderItem.setCreatedOn(((Timestamp) Objects.requireNonNull(keyHolder.getKeys()).get("created_on")).toLocalDateTime());
+        orderItem.setModifiedOn(((Timestamp) Objects.requireNonNull(keyHolder.getKeys()).get("modified_on")).toLocalDateTime());
+
         return orderItem;
     }
 
@@ -61,49 +60,53 @@ public class OrderItemRepositoryImpl implements OrderItemRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection
-                    .prepareStatement(UPDATE_ORDER_ITEM_BY_ID, Statement.RETURN_GENERATED_KEYS);
+                    .prepareStatement(Queries.getQuery(QUERIES_FILE, "UPDATE_ORDER_ITEM_BY_ID"), Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, orderItem.getArticleName());
             ps.setDouble(2, orderItem.getArticlePrice());
-            ps.setInt(3, orderItem.getQuantity());
-            ps.setLong(4, orderItem.getOrder().getId());
-            ps.setLong(5, orderItem.getId());
-            ps.setTimestamp(6, Timestamp.valueOf(orderItem.getModifiedOn()));
+            ps.setDouble(3, orderItem.getArticleTax());
+            ps.setInt(4, orderItem.getQuantity());
+            ps.setLong(5, orderItem.getOrder().getId());
+            ps.setLong(6, orderItem.getId());
+            ps.setTimestamp(7, Timestamp.valueOf(orderItem.getModifiedOn()));
             return ps;
         }, keyHolder);
-        if (keyHolder.getKeys() == null)
+        if (keyHolder.getKeys() == null) {
             return Optional.empty();
+        } else {
+            orderItem.setModifiedOn(((Timestamp) Objects.requireNonNull(keyHolder.getKeys()).get("modified_on")).toLocalDateTime());
+        }
         return Optional.of(orderItem);
     }
 
     @Transactional
     @Override
     public List<OrderItem> getAll() {
-        return jdbcTemplate.query(SELECT_ALL_ORDER_ITEMS, new OrderItemMapper());
+        return jdbcTemplate.query(Queries.getQuery(QUERIES_FILE, "SELECT_ALL_ORDER_ITEMS"), new OrderItemMapper());
     }
 
     @Transactional
     @Override
     public List<OrderItem> getAllByOrderId(Long orderId) {
-        return jdbcTemplate.query(SELECT_ALL_ORDER_ITEMS_BY_ORDER_ID, new OrderItemMapper(), orderId);
+        return jdbcTemplate.query(Queries.getQuery(QUERIES_FILE, "SELECT_ALL_ORDER_ITEMS_BY_ORDER_ID"), new OrderItemMapper(), orderId);
     }
 
     @Transactional
     @Override
     public void deleteAllByOrderId(Long orderId) {
-        jdbcTemplate.update(DELETE_ORDER_ITEM_BY_ORDER_ID,
+        jdbcTemplate.update(Queries.getQuery(QUERIES_FILE, "DELETE_ORDER_ITEM_BY_ORDER_ID"),
                 orderId);
     }
 
     @Transactional
     @Override
     public OrderItem findById(Long id) {
-        return jdbcTemplate.queryForObject(SELECT_ORDER_ITEM_BY_ID, new OrderItemMapper(), id);
+        return jdbcTemplate.queryForObject(Queries.getQuery(QUERIES_FILE, "SELECT_ORDER_ITEM_BY_ID"), new OrderItemMapper(), id);
     }
 
     @Transactional
     @Override
     public void deleteById(OrderItem orderItem) {
-        jdbcTemplate.update(DELETE_ORDER_ITEM_BY_ID,
+        jdbcTemplate.update(Queries.getQuery(QUERIES_FILE, "DELETE_ORDER_ITEM_BY_ID"),
                 orderItem.getId());
     }
 
@@ -121,6 +124,7 @@ public class OrderItemRepositoryImpl implements OrderItemRepository {
                     rs.getLong("id"),
                     rs.getString("article_name"),
                     rs.getDouble("article_price"),
+                    rs.getDouble("article_tax"),
                     rs.getInt("quantity"),
                     null,
                     rs.getTimestamp("created_on") != null ? rs.getTimestamp("created_on").toLocalDateTime() : null,

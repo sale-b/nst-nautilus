@@ -26,7 +26,7 @@
                      <HBox.margin>
                         <Insets />
                      </HBox.margin></Label>
-                  <Label fx:id="topLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="39.0" style="-fx-cursor: move; -fx-background-color: #f4f4f4; -fx-text-fill: black;-fx-font-family: 'Roboto';-fx-font-size: 14px;" text="NAUTILUS" HBox.hgrow="ALWAYS">
+                  <Label fx:id="topLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="39.0" style="-fx-cursor: move; -fx-background-color: #f4f4f4; -fx-text-fill: black;-fx-font-family: 'Roboto';-fx-font-size: 14px;" HBox.hgrow="ALWAYS">
                      <cursor>
                         <Cursor fx:constant="MOVE" />
                      </cursor>
@@ -125,7 +125,7 @@
                         <Insets left="15.0" />
                      </padding>
                   </Button>
-                  <Button fx:id="bt5" alignment="BASELINE_LEFT" layoutX="22.0" layoutY="188.0" mnemonicParsing="false" onAction="#packagingPage" prefHeight="40.0" prefWidth="152.0" styleClass="menu-button" text="Ambalaža">
+                  <Button fx:id="bt4" alignment="BASELINE_LEFT" layoutX="22.0" layoutY="188.0" mnemonicParsing="false" onAction="#packagingPage" prefHeight="40.0" prefWidth="152.0" styleClass="menu-button" text="Ambalaža">
                      <padding>
                         <Insets left="15.0" />
                      </padding>
@@ -140,7 +140,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="bt4" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#sanitizePage" prefHeight="40.0" prefWidth="152.0" styleClass="menu-button" text="Sanitacija">
+                  <Button fx:id="bt5" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#sanitizePage" prefHeight="40.0" prefWidth="152.0" styleClass="menu-button" text="Sanitacija">
                      <VBox.margin>
                         <Insets bottom="10.0" left="12.0" />
                      </VBox.margin>

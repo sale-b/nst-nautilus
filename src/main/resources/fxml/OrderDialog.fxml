@@ -20,13 +20,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="510.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nautilus.controller.dialogs.OrderDialogController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="510.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nautilus.controller.dialogs.OrderDialogController">
    <children>
       <HBox prefHeight="510.0" prefWidth="766.0" styleClass="background" stylesheets="@../styles/Styles.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
          <children>
             <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="510.0" prefWidth="386.0" spacing="10.0" styleClass="background-vbox" stylesheets="@../styles/Styles.css">
                <children>
-                  <Label fx:id="title" text="Dodavanje nove porudžbine" textFill="WHITE">
+                  <Label fx:id="title" text="" textFill="WHITE">
                      <font>
                         <Font size="20.0" />
                      </font>
@@ -39,7 +39,7 @@
                         <Insets left="25.0" />
                      </VBox.margin>
                   </TextField>
-                  <TextField fx:id="name" editable="false" prefHeight="30.0" prefWidth="329.0" promptText="Ime">
+                  <TextField fx:id="name" editable="false" prefHeight="30.0" prefWidth="329.0" promptText="Ime/Naziv">
                      <VBox.margin>
                         <Insets left="25.0" />
                      </VBox.margin>
@@ -59,12 +59,12 @@
                         <Insets left="25.0" />
                      </VBox.margin>
                   </TextField>
-                  <TextField fx:id="type" editable="false" prefHeight="30.0" prefWidth="246.0" promptText="Pravna forma">
+                  <TextField fx:id="legalForm" editable="false" prefHeight="30.0" prefWidth="246.0" promptText="Pravna forma">
                      <VBox.margin>
                         <Insets left="25.0" />
                      </VBox.margin>
                   </TextField>
-                  <DatePicker fx:id="date" editable="false" prefHeight="30.0" prefWidth="278.0" promptText="Datum porudžbine">
+                  <DatePicker fx:id="date" prefHeight="30.0" prefWidth="278.0" promptText="Datum porudžbine">
                      <VBox.margin>
                         <Insets left="25.0" />
                      </VBox.margin>
@@ -109,25 +109,13 @@
                   <Insets />
                </opaqueInsets>
             </VBox>
-            <VBox prefHeight="500.0" prefWidth="454.0" spacing="10.0" stylesheets="@../styles/Styles.css">
+            <VBox prefHeight="500.0" prefWidth="600.0" spacing="10.0" stylesheets="@../styles/Styles.css">
                <children>
-                  <Button fx:id="cancel" alignment="CENTER" contentDisplay="CENTER" maxHeight="31.0" maxWidth="31.0" minHeight="31.0" minWidth="31.0" mnemonicParsing="false" onAction="#cancel" prefHeight="31.0" prefWidth="31.0" style="-fx-background-color: red; -fx-background-radius: 50%;" text="X" textFill="WHITE">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                     <effect>
-                        <DropShadow blurType="ONE_PASS_BOX" color="#6468b2" />
-                     </effect>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
+                  <FontAwesomeIconView fx:id="cancel" fill="#e36e6e" glyphName="REMOVE" onMouseClicked="#cancel" size="30" styleClass="close-dialog">
                      <VBox.margin>
-                        <Insets bottom="15.0" left="390.0" top="20.0" />
+                        <Insets left="550.0" top="10.0" />
                      </VBox.margin>
-                  </Button>
+                  </FontAwesomeIconView>
                   <HBox prefHeight="28.0" prefWidth="349.0">
                      <children>
                         <ComboBox fx:id="comBoxArticles" prefHeight="29.0" prefWidth="382.0" promptText="Izaberite artikal" style="-fx-background-color: #ffffff;">
@@ -143,7 +131,7 @@
                               <Insets right="10.0" />
                            </HBox.margin>
                         </Label>
-                        <Spinner fx:id="articleQuantity" maxHeight="30.0" maxWidth="59.0" minHeight="30.0" minWidth="59.0" prefHeight="30.0" prefWidth="59.0">
+                        <Spinner fx:id="articleQuantity" editable="true" maxHeight="30.0" maxWidth="59.0" minHeight="30.0" minWidth="59.0" prefHeight="30.0" prefWidth="59.0">
                            <HBox.margin>
                               <Insets right="20.0" />
                            </HBox.margin>
@@ -175,26 +163,41 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <TableView fx:id="orderItemsTable" prefHeight="286.0" prefWidth="351.0" styleClass="order" stylesheets="@../styles/Styles.css">
-                    <columns>
-                       <TableColumn fx:id="colName" maxWidth="300.0" prefWidth="140.0" text="Artikal" />
-                       <TableColumn fx:id="colQuantity" maxWidth="300.0" prefWidth="50.0" text="Kol." />
-                       <TableColumn fx:id="colUnitPrice" maxWidth="300.0" prefWidth="85.0" text="Cena/jed." />
-                       <TableColumn fx:id="colItemPrice" maxWidth="300.0" prefWidth="85.0" text="Cena stavke" />
-                       <TableColumn fx:id="colRemove" maxWidth="300.0" prefWidth="58.0" text="Ukloni" />
-                    </columns>
+                  <TableView fx:id="orderItemsTable" prefHeight="286.0" prefWidth="580.0" styleClass="order" stylesheets="@../styles/Styles.css">
+                     <columns>
+                        <TableColumn fx:id="colName" editable="false" maxWidth="1.7976931348623157E308" minWidth="98.0" prefWidth="-1.0" sortable="false" text="Artikal" />
+                        <TableColumn fx:id="colQuantity" editable="false" maxWidth="1.7976931348623157E308" minWidth="98.0" prefWidth="-1.0" sortable="false" text="Kol." />
+                        <TableColumn fx:id="colUnitPrice" editable="false" maxWidth="1.7976931348623157E308" minWidth="98.0" prefWidth="-1.0" sortable="false" text="Cena/jed." />
+                        <TableColumn fx:id="colUnitTax" editable="false" maxWidth="1.7976931348623157E308" minWidth="98.0" prefWidth="-1.0" sortable="false" text="PDV/jed." />
+                        <TableColumn fx:id="colItemTotalPrice" editable="false" maxWidth="1.7976931348623157E308" minWidth="98.0" prefWidth="-1.0" sortable="false" text="Cena (PDV)" />
+                        <TableColumn fx:id="colRemove" editable="false" maxWidth="1.7976931348623157E308" minWidth="98.0" prefWidth="-1.0" sortable="false" text="Ukloni" />
+                     </columns>
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
                   </TableView>
-                  <HBox prefHeight="35.0" prefWidth="382.0">
+                  <Label fx:id="totalTax" minWidth="250.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="30.0" prefWidth="399.0" text="PDV:" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Label>
+                  <HBox nodeOrientation="RIGHT_TO_LEFT" prefHeight="35.0" prefWidth="382.0">
                      <children>
-                        <Label fx:id="totalPrice" minWidth="250.0" prefHeight="30.0" prefWidth="250.0" text="Ukupno:" textFill="WHITE">
+                        <Button fx:id="saveOrder" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#saveOrder" prefHeight="30.0" prefWidth="75.0" styleClass="save-button" text="Sačuvaj" textFill="WHITE">
                            <font>
-                              <Font name="System Bold" size="18.0" />
+                              <Font size="15.0" />
                            </font>
-                        </Label>
-                        <Button fx:id="reset" mnemonicParsing="false" onAction="#reset" prefHeight="30.0" prefWidth="75.0" style="-fx-background-color: blue;" text="Resetuj" textFill="WHITE">
+                           <effect>
+                              <DropShadow blurType="ONE_PASS_BOX" color="#6468b2" />
+                           </effect>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <HBox.margin>
+                              <Insets left="20.0" right="20.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button fx:id="reset" mnemonicParsing="false" onAction="#reset" prefHeight="30.0" prefWidth="75.0" styleClass="reset-button" text="Resetuj" textFill="WHITE">
                            <effect>
                               <DropShadow blurType="ONE_PASS_BOX" color="#1965d0" />
                            </effect>
@@ -208,27 +211,15 @@
                               <Insets />
                            </HBox.margin>
                         </Button>
-                        <Button fx:id="saveOrder" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#saveOrder" prefHeight="30.0" prefWidth="75.0" styleClass="btnGreen" text="Sačuvaj" textFill="WHITE">
+                        <Label fx:id="totalPrice" minWidth="250.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="30.0" prefWidth="399.0" text="Ukupno:" textFill="WHITE">
                            <font>
-                              <Font size="15.0" />
+                              <Font name="System Bold" size="18.0" />
                            </font>
-                           <effect>
-                              <DropShadow blurType="ONE_PASS_BOX" color="#6468b2" />
-                           </effect>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                           <HBox.margin>
-                              <Insets left="20.0" />
-                           </HBox.margin>
-                        </Button>
+                        </Label>
                      </children>
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
-                     <padding>
-                        <Insets right="20.0" />
-                     </padding>
                   </HBox>
                </children>
                <padding>
@@ -245,5 +236,6 @@
       </HBox>
       <ListView fx:id="customersList" onMouseClicked="#customerSelect" prefHeight="0.0" prefWidth="355.0" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="110.0" />
       <FontAwesomeIconView glyphName="SEARCH" size="18" AnchorPane.bottomAnchor="374.6484375" AnchorPane.leftAnchor="365.0" AnchorPane.rightAnchor="349.2857151031494" AnchorPane.topAnchor="88.0" />
+      <Label prefHeight="35.0" prefWidth="444.0" AnchorPane.leftAnchor="400.0" AnchorPane.topAnchor="155.0" />
    </children>
 </AnchorPane>

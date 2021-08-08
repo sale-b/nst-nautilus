@@ -1,10 +1,12 @@
 package com.nautilus.controller.dialogs;
 
+import com.jfoenix.controls.JFXToggleButton;
 import com.nautilus.config.Config;
 import com.nautilus.controller.CustomerController;
 import com.nautilus.domain.Customer;
 import com.nautilus.service.CustomerService;
 import com.nautilus.util.Formatter;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,8 +29,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static com.nautilus.controller.dialogs.OrderDialogController.getString;
-import static com.nautilus.domain.Customer.CustomerType.INDIVIDUAL;
-import static com.nautilus.domain.Customer.CustomerType.LEGAL_ENTITY;
+import static com.nautilus.domain.Customer.LegalForm.INDIVIDUAL;
+import static com.nautilus.domain.Customer.LegalForm.LEGAL_ENTITY;
 import static com.nautilus.util.Validation.*;
 
 @SuppressWarnings("unused")
@@ -39,7 +41,7 @@ public class CustomerDialogController implements Initializable {
     private CustomerController customerController;
 
     @FXML
-    private Button cancel;
+    private FontAwesomeIconView cancel;
 
     @FXML
     @Getter
@@ -70,6 +72,10 @@ public class CustomerDialogController implements Initializable {
 
     @FXML
     @Getter
+    private Label sanitizeLabel;
+
+    @FXML
+    @Getter
     private Spinner<Integer> sanitisePeriod;
 
     @FXML
@@ -77,7 +83,11 @@ public class CustomerDialogController implements Initializable {
     private RadioButton rbIndividual;
 
     @FXML
-    private ToggleGroup type;
+    private ToggleGroup legalForm;
+
+    @FXML
+    @Getter
+    private JFXToggleButton tbWithContract;
 
     @FXML
     @Getter
@@ -99,9 +109,8 @@ public class CustomerDialogController implements Initializable {
     private final ApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
     private final CustomerService customerService = (CustomerService) context.getBean("customerServiceImpl");
 
-    //todo
     @FXML
-    void cancel(ActionEvent event) {
+    void cancel(MouseEvent event) {
         ((Node) (event.getSource())).getScene().getWindow().hide();
         if (reloadUserDetailsNeeded)
             customerController.loadCustomerDetails();
@@ -110,7 +119,7 @@ public class CustomerDialogController implements Initializable {
     @FXML
     void reset(ActionEvent event) {
         clearFields();
-        title.setText("Dodavanje novog klojenta");
+        title.setText("Dodavanje novog korisnika");
     }
 
     @FXML
@@ -122,7 +131,7 @@ public class CustomerDialogController implements Initializable {
 
             @Override
             public void run() {
-                if (!city.getText().equals("")) {
+                if (city.getText().trim().length() > 2) {
                     Platform.runLater(() -> {
                         cityList.getItems().clear();
                         cityList.getItems().addAll(customerService.findDistinctCities(city.getText().toLowerCase().trim()));
@@ -130,7 +139,7 @@ public class CustomerDialogController implements Initializable {
                         cityList.setVisible(true);
                         cityList.setPrefHeight(Math.min(cityList.getItems().size(), 10) * 23 + 2);
                     });
-                } else {
+                } else if (city.getText().equals("")) {
                     clearCityList();
                 }
                 timer.cancel();
@@ -149,7 +158,10 @@ public class CustomerDialogController implements Initializable {
     @FXML
     private void saveCustomer(ActionEvent event) {
         if (validateName(getNameValue()) &&
-                emptyValidation(date.getEditor().getText().isEmpty())) {
+                validateCity(getCityValue()) &&
+                validateAddress(getAddressValue()) &&
+                validatePhone(getPhoneValue()) &&
+                (!tbWithContract.isSelected() || emptyValidation(date.getEditor().getText().isEmpty(), "datum"))) {
             if (this.customer == null) {
                 customer = new Customer();
                 fillCustomerFields(customer);
@@ -172,7 +184,7 @@ public class CustomerDialogController implements Initializable {
                     address.setText(customer.getAddress());
                     city.setText(customer.getCity());
                     date.setValue(customer.getDate());
-                    if (this.customer.getType().equals(INDIVIDUAL)) rbIndividual.setSelected(true);
+                    if (this.customer.getLegalForm().equals(INDIVIDUAL)) rbIndividual.setSelected(true);
                     else getRbLegalEntity().setSelected(true);
                 }
             }
@@ -186,9 +198,9 @@ public class CustomerDialogController implements Initializable {
         customer.setAddress(getAddressValue());
         customer.setCity(getCityValue());
         customer.setPhone(getPhoneValue());
-        customer.setSanitisePeriodInMonths(getSanitizePeriodValue());
+        customer.setRequiredSanitisePeriodInMonths(getSanitizePeriodValue());
         customer.setDate(getDateValue());
-        customer.setType(getTypeValue());
+        customer.setLegalForm(getLegalFormValue());
     }
 
     @Override
@@ -196,6 +208,23 @@ public class CustomerDialogController implements Initializable {
         this.sanitisePeriod.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 12, 1));
         cityList.setVisible(false);
         Formatter.setDatePickerFormat(date);
+    }
+
+    @FXML
+    void changeContractDetails(ActionEvent event) {
+        if (!tbWithContract.isSelected()) {
+            date.setDisable(true);
+            date.setValue(null);
+            sanitizeLabel.setDisable(true);
+            sanitisePeriod.getValueFactory().setValue(1);
+            sanitisePeriod.setDisable(true);
+        } else {
+            date.setDisable(false);
+            date.setValue(null);
+            sanitizeLabel.setDisable(false);
+            sanitisePeriod.setDisable(false);
+            sanitisePeriod.getValueFactory().setValue(1);
+        }
     }
 
 
@@ -216,14 +245,14 @@ public class CustomerDialogController implements Initializable {
     }
 
     public Integer getSanitizePeriodValue() {
-        return sanitisePeriod.getValue();
+        return tbWithContract.isSelected() ? sanitisePeriod.getValue() : null;
     }
 
     public LocalDate getDateValue() {
         return date.getValue();
     }
 
-    public Customer.CustomerType getTypeValue() {
+    public Customer.LegalForm getLegalFormValue() {
         return rbIndividual.isSelected() ? INDIVIDUAL : LEGAL_ENTITY;
     }
 
@@ -236,6 +265,7 @@ public class CustomerDialogController implements Initializable {
         date.getEditor().clear();
         phone.clear();
         sanitisePeriod.getEditor().setText("1");
+        sanitisePeriod.getValueFactory().setValue(1);
         rbIndividual.setSelected(true);
         rbLegalEntity.setSelected(false);
     }
@@ -244,15 +274,6 @@ public class CustomerDialogController implements Initializable {
         Platform.runLater(() -> cityList.getItems().clear());
         cityList.setPrefHeight(0);
         cityList.setVisible(false);
-    }
-
-    private boolean emptyValidation(boolean empty) {
-        if (!empty) {
-            return true;
-        } else {
-            validationAlert(true, "date");
-            return false;
-        }
     }
 
 }

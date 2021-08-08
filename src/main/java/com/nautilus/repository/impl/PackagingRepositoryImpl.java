@@ -51,6 +51,8 @@ public class PackagingRepositoryImpl implements PackagingRepository {
         }, keyHolder);
 
         packaging.setId((Long) (Objects.requireNonNull(keyHolder.getKeys()).get("id")));
+        packaging.setCreatedOn(((Timestamp) Objects.requireNonNull(keyHolder.getKeys()).get("created_on")).toLocalDateTime());
+        packaging.setModifiedOn(((Timestamp) Objects.requireNonNull(keyHolder.getKeys()).get("modified_on")).toLocalDateTime());
         return packaging;
     }
 
@@ -81,8 +83,11 @@ public class PackagingRepositoryImpl implements PackagingRepository {
             ps.setTimestamp(6, Timestamp.valueOf(packaging.getModifiedOn()));
             return ps;
         }, keyHolder);
-        if (keyHolder.getKeys() == null)
+        if (keyHolder.getKeys() == null) {
             return Optional.empty();
+        } else {
+            packaging.setModifiedOn(((Timestamp) Objects.requireNonNull(keyHolder.getKeys()).get("modified_on")).toLocalDateTime());
+        }
         return Optional.of(packaging);
     }
 

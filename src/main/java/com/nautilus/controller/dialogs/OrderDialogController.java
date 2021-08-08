@@ -9,7 +9,8 @@ import com.nautilus.domain.OrderItem;
 import com.nautilus.service.ArticleService;
 import com.nautilus.service.CustomerService;
 import com.nautilus.service.OrderService;
-import com.nautilus.util.Formatter;
+import com.nautilus.view.FxmlView;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -35,7 +36,9 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.nautilus.domain.Customer.CustomerType.LEGAL_ENTITY;
+import static com.nautilus.domain.Customer.LegalForm.LEGAL_ENTITY;
+import static com.nautilus.util.Formatter.formatPrice;
+import static com.nautilus.util.Formatter.formatTax;
 import static com.nautilus.util.Validation.*;
 
 @SuppressWarnings("unused")
@@ -70,7 +73,7 @@ public class OrderDialogController implements Initializable {
 
     @FXML
     @Getter
-    private TextField type;
+    private TextField legalForm;
 
     @FXML
     @Getter
@@ -89,7 +92,7 @@ public class OrderDialogController implements Initializable {
     private TextArea note;
 
     @FXML
-    private Button cancel;
+    private FontAwesomeIconView cancel;
 
     @FXML
     private ComboBox<Article> comBoxArticles;
@@ -113,7 +116,10 @@ public class OrderDialogController implements Initializable {
     private TableColumn<OrderItem, String> colUnitPrice;
 
     @FXML
-    private TableColumn<OrderItem, String> colItemPrice;
+    private TableColumn<OrderItem, String> colUnitTax;
+
+    @FXML
+    private TableColumn<OrderItem, String> colItemTotalPrice;
 
     @FXML
     private TableColumn<OrderItem, String> colRemove;
@@ -121,6 +127,10 @@ public class OrderDialogController implements Initializable {
 
     @FXML
     private Label totalPrice;
+
+    @FXML
+    private Label totalTax;
+
 
     @FXML
     private Button reset;
@@ -145,9 +155,8 @@ public class OrderDialogController implements Initializable {
     private final ObservableList<OrderItem> orderItemsList = FXCollections.observableArrayList();
     private final String ORDER_ITEMS_CELL_STYLE = "-fx-background-color: #ffffff;-fx-label-padding: 0;-fx-pref-width:5000;-fx-pref-height:35;-fx-font-family: 'Roboto';-fx-text-fill: #000000;";
 
-    //todo
     @FXML
-    void cancel(ActionEvent event) {
+    void cancel(MouseEvent event) {
         ((Node) (event.getSource())).getScene().getWindow().hide();
         if (reloadOrderDetailsNeeded)
             orderController.loadOrderDetails();
@@ -169,6 +178,7 @@ public class OrderDialogController implements Initializable {
             OrderItem orderItem = new OrderItem();
             orderItem.setArticleName(this.article.getName());
             orderItem.setArticlePrice(this.article.getPrice());
+            orderItem.setArticleTax(this.article.getTax());
             orderItem.setQuantity(this.articleQuantity.getValue());
             this.order.addItem(orderItem);
             refreshOrderItems();
@@ -183,12 +193,13 @@ public class OrderDialogController implements Initializable {
         this.comBoxArticles.getSelectionModel().clearSelection();
         loadComboBoxArticles();
         recalculateTotalPrice();
+        recalculateTotalTax();
     }
 
     @FXML
     void reset(ActionEvent event) {
         clearFields();
-        title.setText("Dodavanje nove porudžbine");
+        title.setText(FxmlView.ORDER_DIALOG.getTitle());
     }
 
     @FXML
@@ -200,7 +211,7 @@ public class OrderDialogController implements Initializable {
 
             @Override
             public void run() {
-                if (!userSearch.getText().equals("")) {
+                if (userSearch.getText().trim().length() > 2) {
                     Platform.runLater(() -> {
                         customersList.getItems().clear();
                         customersList.getItems().addAll(customerService.findByTextFields(
@@ -209,7 +220,7 @@ public class OrderDialogController implements Initializable {
                         customersList.setVisible(true);
                         customersList.setPrefHeight(Math.min(customersList.getItems().size(), 10) * 23 + 16);
                     });
-                } else {
+                } else if (userSearch.getText().equals("")) {
                     clearUsersList();
                 }
                 timer.cancel();
@@ -228,17 +239,17 @@ public class OrderDialogController implements Initializable {
         this.address.setText(order.getCustomer().getAddress());
         this.city.setText(order.getCustomer().getCity());
         this.phone.setText(order.getCustomer().getPhone());
-        if (order.getCustomer().getType().equals(LEGAL_ENTITY))
-            this.type.setText("Pravno lice");
-        else this.type.setText("Fizičko lice");
+        if (order.getCustomer().getLegalForm().equals(LEGAL_ENTITY))
+            this.legalForm.setText("Pravno lice");
+        else this.legalForm.setText("Fizičko lice");
     }
 
     @FXML
     private void saveOrder(ActionEvent event) {
 
         if (validateName(getNameValue()) &&
-                emptyValidation(date.getEditor().getText().isEmpty(), "date") &&
-                emptyValidation(orderItemsTable.getItems().isEmpty(), "order items")) {
+                emptyValidation(date.getEditor().getText().isEmpty(), "datum") &&
+                emptyValidation(orderItemsTable.getItems().isEmpty(), "stavka porudžbine")) {
 
             if (this.order.getId() == null) {
                 fillOrderFields();
@@ -262,7 +273,7 @@ public class OrderDialogController implements Initializable {
                     address.setText(order.getCustomer().getAddress());
                     city.setText(order.getCustomer().getCity());
                     phone.setText(order.getCustomer().getPhone());
-                    type.setText(order.getCustomer().getType().toString());
+                    legalForm.setText(order.getCustomer().getLegalForm().toString());
                     date.setValue(order.getDate());
                     deliveredBy.getSelectionModel().select(order.getDeliveredBy());
                     payed.setSelected(order.getPayed());
@@ -280,8 +291,6 @@ public class OrderDialogController implements Initializable {
         order.setPayed(getPayedValue());
         order.setDeliveredBy(getDeliveredByValue());
         order.setNote(getNoteValue());
-        order.setPackagingDebtSmall(order.findOrderItemByArticleName(Formatter.WATER_SMALL).map(OrderItem::getQuantity).orElse(0));
-        order.setPackagingDebtLarge(order.findOrderItemByArticleName(Formatter.WATER_LARGE).map(OrderItem::getQuantity).orElse(0));
     }
 
 
@@ -312,7 +321,12 @@ public class OrderDialogController implements Initializable {
 
     private void recalculateTotalPrice() {
         this.totalPrice.setText(
-                String.format("Ukupno: %.02f din.", order.getItems().stream().map(orderItem -> orderItem.getArticlePrice() * orderItem.getQuantity()).mapToDouble(Double::doubleValue).sum()));
+                String.format("Ukupno: %s", formatPrice(order.getItems().stream().map(orderItem -> orderItem.getArticlePrice() * (1 + orderItem.getArticleTax() / 100) * orderItem.getQuantity()).mapToDouble(Double::doubleValue).sum())));
+    }
+
+    private void recalculateTotalTax() {
+        this.totalTax.setText(
+                String.format("PDV: %s", formatPrice(order.getItems().stream().map(orderItem -> orderItem.getArticlePrice() * (orderItem.getArticleTax() / 100) * orderItem.getQuantity()).mapToDouble(Double::doubleValue).sum())));
     }
 
     @Override
@@ -331,14 +345,23 @@ public class OrderDialogController implements Initializable {
         this.deliveredBy.getSelectionModel().select(Order.DeliveredBy.NONE);
         payed.setDisable(true);
 
-        Formatter.setDatePickerFormat(date);
+        articleQuantity.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                articleQuantity.getEditor().setText(newValue.replaceAll("[^\\d]", ""));
+            }
+            if (!articleQuantity.getEditor().getText().equals("")) {
+                articleQuantity.increment(0); // won't change value, but will commit editor
+            }
+        });
     }
+
 
     private void setColumnProperties() {
         setTableColumn(colName, nameCellFactory);
         setTableColumn(colQuantity, quantityCellFactory);
         setTableColumn(colUnitPrice, unitPriceCellFactory);
-        setTableColumn(colItemPrice, itemPriceCellFactory);
+        setTableColumn(colUnitTax, unitTaxCellFactory);
+        setTableColumn(colItemTotalPrice, itemPriceCellFactory);
         setTableColumn(colRemove, removeCellFactory);
     }
 
@@ -397,6 +420,23 @@ public class OrderDialogController implements Initializable {
                 }
             };
 
+    Callback<TableColumn<OrderItem, String>, TableCell<OrderItem, String>> unitTaxCellFactory =
+            new Callback<TableColumn<OrderItem, String>, TableCell<OrderItem, String>>() {
+                @Override
+                public TableCell<OrderItem, String> call(final TableColumn<OrderItem, String> param) {
+                    return new TableCell<OrderItem, String>() {
+                        final Label label = new Label();
+                        final String CELL_NAME = "tax";
+
+                        @Override
+                        protected void updateItem(String item, boolean empty) {
+                            super.updateItem(item, empty);
+                            updateGenericItem(item, empty, this, param, label, CELL_NAME);
+                        }
+                    };
+                }
+            };
+
     Callback<TableColumn<OrderItem, String>, TableCell<OrderItem, String>> itemPriceCellFactory =
             new Callback<TableColumn<OrderItem, String>, TableCell<OrderItem, String>>() {
                 @Override
@@ -436,20 +476,28 @@ public class OrderDialogController implements Initializable {
                             .get(currentIndex).getQuantity().toString();
                     break;
                 case "price":
-                    cellValue = String.format("%.02f", param
+                    cellValue = formatPrice(param
                             .getTableView().getItems()
                             .get(currentIndex).getArticlePrice());
                     break;
-                case "itemPrice":
-                    cellValue = String.format("%.02f", param
+                case "tax":
+                    cellValue = formatTax(param
                             .getTableView().getItems()
-                            .get(currentIndex).getArticlePrice() * param
+                            .get(currentIndex).getArticleTax());
+                    break;
+                case "itemPrice":
+                    cellValue = formatPrice(param
+                            .getTableView().getItems()
+                            .get(currentIndex).getArticlePrice() * (1 + param
+                            .getTableView().getItems()
+                            .get(currentIndex).getArticleTax() / 100) * param
                             .getTableView().getItems()
                             .get(currentIndex).getQuantity());
                     break;
             }
             label.setAlignment(Pos.CENTER);
             label.setText(cellValue);
+            label.setTooltip(new Tooltip(cellValue));
             tableCell.setGraphic(label);
         }
 
@@ -476,6 +524,7 @@ public class OrderDialogController implements Initializable {
                                     removeOrderItem(orderItem);
                                     loadComboBoxArticles();
                                     recalculateTotalPrice();
+                                    recalculateTotalTax();
                                 });
 
                                 btnEdit.setStyle("-fx-background-color: transparent;");
@@ -546,7 +595,7 @@ public class OrderDialogController implements Initializable {
         address.clear();
         city.clear();
         phone.clear();
-        type.clear();
+        legalForm.clear();
         date.getEditor().clear();
         deliveredBy.getSelectionModel().select(Order.DeliveredBy.NONE);
         payed.setSelected(false);

@@ -1,14 +1,18 @@
 package com.nautilus.view;
 
+import lombok.extern.slf4j.Slf4j;
+
+import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
 
 @SuppressWarnings("unused")
+@Slf4j
 public enum FxmlView {
 
     BORDERLESS {
         @Override
         public String getTitle() {
-            return getStringFromResourceBundle("user.title");
+            return getStringFromResourceBundle("");
         }
 
         @Override
@@ -20,7 +24,7 @@ public enum FxmlView {
     MAIN_WINDOW {
         @Override
         public String getTitle() {
-            return getStringFromResourceBundle("user.title");
+            return getStringFromResourceBundle("app.title");
         }
 
         @Override
@@ -33,7 +37,7 @@ public enum FxmlView {
     TRANSPARENT_WINDOW {
         @Override
         public String getTitle() {
-            return getStringFromResourceBundle("user.title");
+            return getStringFromResourceBundle("");
         }
 
         @Override
@@ -42,34 +46,10 @@ public enum FxmlView {
         }
     },
 
-    USER_DIALOG {
-        @Override
-        public String getTitle() {
-            return getStringFromResourceBundle("window.title");
-        }
-
-        @Override
-        public String getFxmlFile() {
-            return "/fxml/CustomerDialog.fxml";
-        }
-    },
-
-    CUSTOMER {
-        @Override
-        public String getTitle() {
-            return getStringFromResourceBundle("user.title");
-        }
-
-        @Override
-        public String getFxmlFile() {
-            return "/fxml/Customers.fxml";
-        }
-    },
-
     SIDE_PANE {
         @Override
         public String getTitle() {
-            return getStringFromResourceBundle("user.title");
+            return getStringFromResourceBundle("");
         }
 
         @Override
@@ -78,10 +58,22 @@ public enum FxmlView {
         }
     },
 
+    CUSTOMER {
+        @Override
+        public String getTitle() {
+            return getStringFromResourceBundle("");
+        }
+
+        @Override
+        public String getFxmlFile() {
+            return "/fxml/Customers.fxml";
+        }
+    },
+
     ORDER {
         @Override
         public String getTitle() {
-            return getStringFromResourceBundle("user.title");
+            return getStringFromResourceBundle("");
         }
 
         @Override
@@ -93,7 +85,7 @@ public enum FxmlView {
     ARTICLE {
         @Override
         public String getTitle() {
-            return getStringFromResourceBundle("user.title");
+            return getStringFromResourceBundle("");
         }
 
         @Override
@@ -102,22 +94,46 @@ public enum FxmlView {
         }
     },
 
-    ARTICLE_DIALOG {
+    PACKAGING {
         @Override
         public String getTitle() {
-            return getStringFromResourceBundle("window.title");
+            return getStringFromResourceBundle("");
         }
 
         @Override
         public String getFxmlFile() {
-            return "/fxml/ArticleDialog.fxml";
+            return "/fxml/Packaging.fxml";
+        }
+    },
+
+    SANITIZE {
+        @Override
+        public String getTitle() {
+            return getStringFromResourceBundle("");
+        }
+
+        @Override
+        public String getFxmlFile() {
+            return "/fxml/Sanitize.fxml";
+        }
+    },
+
+    CUSTOMER_DIALOG {
+        @Override
+        public String getTitle() {
+            return getStringFromResourceBundle("customer-dialog.title");
+        }
+
+        @Override
+        public String getFxmlFile() {
+            return "/fxml/CustomerDialog.fxml";
         }
     },
 
     ORDER_DIALOG {
         @Override
         public String getTitle() {
-            return getStringFromResourceBundle("window.title");
+            return getStringFromResourceBundle("order-dialog.title");
         }
 
         @Override
@@ -126,28 +142,37 @@ public enum FxmlView {
         }
     },
 
-
-    PACKAGING {
+    ARTICLE_DIALOG {
         @Override
         public String getTitle() {
-            return getStringFromResourceBundle("user.title");
+            return getStringFromResourceBundle("article-dialog.title");
         }
 
         @Override
         public String getFxmlFile() {
-            return "/fxml/Page3.fxml";
+            return "/fxml/ArticleDialog.fxml";
         }
     },
-
-    SANITIZE {
+    PACKAGING_DIALOG {
         @Override
         public String getTitle() {
-            return getStringFromResourceBundle("user.title");
+            return getStringFromResourceBundle("packaging-dialog.title");
         }
 
         @Override
         public String getFxmlFile() {
-            return "/fxml/Page4.fxml";
+            return "/fxml/PackagingDialog.fxml";
+        }
+    },
+    SANITIZE_DIALOG {
+        @Override
+        public String getTitle() {
+            return getStringFromResourceBundle("sanitize-dialog.title");
+        }
+
+        @Override
+        public String getFxmlFile() {
+            return "/fxml/SanitizeDialog.fxml";
         }
     };
 
@@ -157,7 +182,8 @@ public enum FxmlView {
     public abstract String getFxmlFile();
 
     String getStringFromResourceBundle(String key) {
-        return ResourceBundle.getBundle("Bundle").getString(key);
+        return new String((ResourceBundle.getBundle("bundle").getString(key))
+                .getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
     }
 
 }

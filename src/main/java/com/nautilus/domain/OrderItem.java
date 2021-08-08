@@ -1,6 +1,7 @@
 package com.nautilus.domain;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
@@ -8,17 +9,21 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
-public class OrderItem {
-
-    private Long id;
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
+@ToString(callSuper = true)
+public class OrderItem extends BaseEntity {
     private String articleName;
     private Double articlePrice;
+    private Double articleTax;
     private Integer quantity;
     @ToString.Exclude
     private Order order;
-    private LocalDateTime createdOn;
-    private LocalDateTime modifiedOn;
 
+    public OrderItem(long id, String articleName, double articlePrice, double articleTax, int quantity, Order order, LocalDateTime createdOn, LocalDateTime modifiedOn) {
+        this(articleName, articlePrice, articleTax, quantity, order);
+        this.id = id;
+        this.createdOn = createdOn;
+        this.modifiedOn = modifiedOn;
+    }
 }

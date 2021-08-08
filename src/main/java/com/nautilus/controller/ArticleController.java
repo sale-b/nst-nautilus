@@ -4,6 +4,7 @@ import com.nautilus.config.Config;
 import com.nautilus.controller.dialogs.ArticleDialogController;
 import com.nautilus.domain.Article;
 import com.nautilus.service.ArticleService;
+import com.nautilus.util.Validation;
 import com.nautilus.view.FxmlView;
 import com.nautilus.view.FxmlViewComponent;
 import com.nautilus.view.StageManager;
@@ -28,13 +29,12 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import java.net.URL;
 import java.util.*;
 
-import static com.nautilus.util.Formatter.styleEditButton;
+import static com.nautilus.util.Formatter.*;
 import static com.nautilus.util.Validation.deleteAlert;
 import static com.nautilus.view.StageManager.makeDialogDraggable;
 
 /**
  * @author Aleksandar.Brankovic
- * @since 05-04-2017
  */
 
 @SuppressWarnings("unused")
@@ -98,19 +98,11 @@ public class ArticleController implements Initializable {
         Optional<ButtonType> action = deleteAlert();
         articles.forEach(a -> {
             if (a.getMandatory())
-                deleteAlertForbidden(a);
+                Validation.deleteAlertForbidden(String.format("Artikal %s nije moguće obrisati.", a.getName()));
         });
         if (action.isPresent() && action.get() == ButtonType.OK) articleService.deleteAll(articles);
 
         loadArticleDetails();
-    }
-
-    private void deleteAlertForbidden(Article Article) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Brisanje onemogućeno");
-        alert.setHeaderText(null);
-        alert.setContentText("Artikal " + Article.getName() + " nije moguće obrisati.");
-        alert.showAndWait();
     }
 
     @FXML
@@ -122,9 +114,9 @@ public class ArticleController implements Initializable {
 
             @Override
             public void run() {
-                if (!searchBox.getText().equals("")) {
+                if (searchBox.getText().trim().length() > 2) {
                     loadSearchDetails(searchBox.getText().toLowerCase().trim());
-                } else {
+                } else if (searchBox.getText().equals("")) {
                     reloadArticleDetails();
                 }
                 timer.cancel();
@@ -149,6 +141,8 @@ public class ArticleController implements Initializable {
     private void setColumnProperties() {
         setTableColumn("Naziv", "name", "leftAlignedTableColumnHeader");
         setTableColumn("Cena", priceCellFactory, "rightAlignedTableColumnHeader");
+        setTableColumn("PDV", taxCellFactory, "rightAlignedTableColumnHeader");
+        setTableColumn("Cena + PDV", totalPriceCellFactory, "rightAlignedTableColumnHeader");
         setTableColumn("Izmeni", editCellFactory, null);
     }
 
@@ -185,7 +179,59 @@ public class ArticleController implements Initializable {
                                 Double clmValue = param
                                         .getTableView().getItems()
                                         .get(currentIndex).getPrice();
-                                setText(String.format("%.02f", clmValue));
+                                setText(formatPrice(clmValue));
+                            }
+                            setStyle("-fx-alignment: CENTER-RIGHT;");
+                        }
+                    };
+                }
+            };
+
+    Callback<TableColumn<Article, String>, TableCell<Article, String>> taxCellFactory =
+            new Callback<TableColumn<Article, String>, TableCell<Article, String>>() {
+                @Override
+                public TableCell<Article, String> call(final TableColumn<Article, String> param) {
+                    return new TableCell<Article, String>() {
+                        @Override
+                        protected void updateItem(String item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty) {
+                                setText(null);
+                            } else {
+                                int currentIndex = indexProperty()
+                                        .getValue() < 0 ? 0
+                                        : indexProperty().getValue();
+                                Double clmValue = param
+                                        .getTableView().getItems()
+                                        .get(currentIndex).getTax();
+                                setText(formatTax(clmValue));
+                            }
+                            setStyle("-fx-alignment: CENTER-RIGHT;");
+                        }
+                    };
+                }
+            };
+
+    Callback<TableColumn<Article, String>, TableCell<Article, String>> totalPriceCellFactory =
+            new Callback<TableColumn<Article, String>, TableCell<Article, String>>() {
+                @Override
+                public TableCell<Article, String> call(final TableColumn<Article, String> param) {
+                    return new TableCell<Article, String>() {
+                        @Override
+                        protected void updateItem(String item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty) {
+                                setText(null);
+                            } else {
+                                int currentIndex = indexProperty()
+                                        .getValue() < 0 ? 0
+                                        : indexProperty().getValue();
+                                Double clmValue = (1+param
+                                        .getTableView().getItems()
+                                        .get(currentIndex).getTax()/100)*param
+                                        .getTableView().getItems()
+                                        .get(currentIndex).getPrice();
+                                setText(formatPrice(clmValue));
                             }
                             setStyle("-fx-alignment: CENTER-RIGHT;");
                         }
@@ -223,7 +269,8 @@ public class ArticleController implements Initializable {
                             showArticleDialog("Izmena postojećeg artikla");
                             articleDialogController.setArticle(article);
                             articleDialogController.getName().setText(article.getName());
-                            articleDialogController.getPrice().setText(article.getPrice().toString());
+                            articleDialogController.getPrice().setText(formatDouble(article.getPrice()));
+                            articleDialogController.getTax().setText(formatDouble(article.getTax()));
                             if (article.getMandatory()) {
                                 articleDialogController.getName().setDisable(true);
                             }

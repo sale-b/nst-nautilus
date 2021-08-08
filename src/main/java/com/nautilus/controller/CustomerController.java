@@ -6,6 +6,7 @@ import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition;
 import com.nautilus.config.Config;
 import com.nautilus.controller.dialogs.CustomerDialogController;
 import com.nautilus.domain.Customer;
+import com.nautilus.domain.dto.CustomerDto;
 import com.nautilus.service.CustomerService;
 import com.nautilus.util.Formatter;
 import com.nautilus.view.FxmlView;
@@ -28,6 +29,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -37,19 +39,21 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static com.nautilus.domain.Customer.CustomerType.LEGAL_ENTITY;
-import static com.nautilus.util.Formatter.styleEditButton;
+import static com.nautilus.domain.Customer.LegalForm.LEGAL_ENTITY;
+import static com.nautilus.util.Formatter.*;
 import static com.nautilus.util.Validation.deleteAlert;
 import static com.nautilus.view.StageManager.makeDialogDraggable;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 /**
  * @author Aleksandar.Brankovic
- * @since 05-04-2017
  */
 
 @Slf4j
 public class CustomerController implements Initializable {
 
+    @FXML
+    private ScrollPane scrollPane;
 
     @FXML
     private VBox rightVbox;
@@ -58,38 +62,44 @@ public class CustomerController implements Initializable {
     private JFXDrawer drawer;
 
     @FXML
-    private TableView<Customer> customerTable;
+    @Getter
+    private TableView<CustomerDto> customerTable;
 
     @FXML
-    private TableColumn<Customer, String> colCustomerName;
+    private TableColumn<CustomerDto, String> colCustomerName;
 
     @FXML
-    private TableColumn<Customer, String> colCustomerCity;
+    private TableColumn<CustomerDto, String> colCustomerCity;
 
     @FXML
-    private TableColumn<Customer, String> colCustomerAddress;
+    private TableColumn<CustomerDto, String> colCustomerAddress;
 
     @FXML
-    private TableColumn<Customer, String> colCustomerPhone;
+    private TableColumn<CustomerDto, String> colCustomerPhone;
 
     @FXML
-    private TableColumn<Customer, String> colCustomerType;
+    private TableColumn<CustomerDto, String> colCustomerLegalForm;
 
     @FXML
-    private TableColumn<Customer, LocalDate> colCustomerDate;
+    private TableColumn<CustomerDto, LocalDate> colCustomerDate;
 
     @FXML
-    private TableColumn<Customer, Boolean> colCustomerEdit;
-
-
-    @FXML
-    private TableColumn<Customer, String> colDebt;
+    private TableColumn<CustomerDto, Boolean> colCustomerEdit;
 
     @FXML
-    private TableColumn<Customer, String> colPackagingSmall;
+    private TableColumn<CustomerDto, Integer> colSanitize;
 
     @FXML
-    private TableColumn<Customer, String> colPackagingLarge;
+    private TableColumn<CustomerDto, Integer> colObligation;
+
+    @FXML
+    private TableColumn<CustomerDto, Double> colDebt;
+
+    @FXML
+    private TableColumn<CustomerDto, Integer> colPackagingSmall;
+
+    @FXML
+    private TableColumn<CustomerDto, Integer> colPackagingLarge;
 
     @FXML
     private Button add;
@@ -104,24 +114,27 @@ public class CustomerController implements Initializable {
     @FXML
     private JFXHamburger hamburger;
 
-    private Timer timer;
+    private Timer searchTimer;
+    private Timer tooltipTimer;
 
     private CustomerDialogController customerDialogController;
+    private SidePaneController sidePaneController;
 
     ApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
     CustomerService customerService = (CustomerService) context.getBean("customerServiceImpl");
 
-    private final ObservableList<Customer> customerList = FXCollections.observableArrayList();
+    @Getter
+    private final ObservableList<CustomerDto> customerList = FXCollections.observableArrayList();
 
     @FXML
     void addCustomer(ActionEvent event) {
-        showCustomerDialog("Dodavanje novog korisnika");
+        showCustomerDialog(FxmlView.CUSTOMER_DIALOG.getTitle());
     }
 
     private void showCustomerDialog(String title) {
         final Stage dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
-        FxmlViewComponent userDialogViewComponent = StageManager.getComponentWithController(FxmlView.USER_DIALOG);
+        FxmlViewComponent userDialogViewComponent = StageManager.getComponentWithController(FxmlView.CUSTOMER_DIALOG);
         Pane dialogPane = (Pane) userDialogViewComponent.getRoot();
         customerDialogController = (CustomerDialogController) userDialogViewComponent.getController();
         makeDialogDraggable(dialog, dialogPane);
@@ -131,9 +144,9 @@ public class CustomerController implements Initializable {
 
     @FXML
     void deleteSelected(ActionEvent event) {
-        List<Customer> customers = customerTable.getSelectionModel().getSelectedItems();
+        List<CustomerDto> customers = customerTable.getSelectionModel().getSelectedItems();
         Optional<ButtonType> action = deleteAlert();
-        if (action.isPresent() && action.get() == ButtonType.OK) customerService.deleteAll(customers);
+        if (action.isPresent() && action.get() == ButtonType.OK) customerService.deleteAllDto(customers);
 
         loadCustomerDetails();
     }
@@ -141,32 +154,32 @@ public class CustomerController implements Initializable {
 
     @FXML
     private void deleteCustomers(ActionEvent event) {
-        List<Customer> customers = customerTable.getSelectionModel().getSelectedItems();
+        List<CustomerDto> customers = customerTable.getSelectionModel().getSelectedItems();
         Optional<ButtonType> action = deleteAlert();
-        if (action.isPresent() && action.get() == ButtonType.OK) customerService.deleteAll(customers);
+        if (action.isPresent() && action.get() == ButtonType.OK) customerService.deleteAllDto(customers);
 
         loadCustomerDetails();
     }
 
     @FXML
     void search(KeyEvent event) {
-        if (timer != null) {
-            timer.cancel();
+        if (searchTimer != null) {
+            searchTimer.cancel();
         }
         TimerTask timerTask = new TimerTask() {
 
             @Override
             public void run() {
-                if (!searchBox.getText().equals("")) {
+                if (searchBox.getText().trim().length() > 2) {
                     loadSearchDetails(searchBox.getText().toLowerCase().trim());
-                } else {
+                } else if (searchBox.getText().equals("")) {
                     reloadCustomerDetails();
                 }
-                timer.cancel();
+                searchTimer.cancel();
             }
         };
-        timer = new Timer();
-        timer.schedule(timerTask, 1000);
+        searchTimer = new Timer();
+        searchTimer.schedule(timerTask, 1000);
     }
 
     @Override
@@ -190,7 +203,9 @@ public class CustomerController implements Initializable {
 
         FxmlViewComponent sidePaneViewComponent = StageManager.getComponentWithController(FxmlView.SIDE_PANE);
         drawer.setSidePane(sidePaneViewComponent.getRoot());
-        ((SidePaneController) sidePaneViewComponent.getController()).setCustomerController(getController());
+        sidePaneController = ((SidePaneController) sidePaneViewComponent.getController());
+        sidePaneController.setCustomerController(getController());
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         customerTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
@@ -210,49 +225,115 @@ public class CustomerController implements Initializable {
         colCustomerAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
         colCustomerCity.setCellValueFactory(new PropertyValueFactory<>("city"));
         colCustomerPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
-        colCustomerDate.setCellFactory(column -> new TableCell<Customer, LocalDate>() {
-
-            @Override
-            protected void updateItem(LocalDate item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                } else {
-                    this.setText(item.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
-
-                }
-            }
-        });
         colCustomerDate.setCellValueFactory(new PropertyValueFactory<>("date"));
-        colCustomerType.setCellValueFactory(new PropertyValueFactory<>("type"));
-        colCustomerEdit.setCellFactory(editCellFactory);
+        colCustomerLegalForm.setCellValueFactory(new PropertyValueFactory<>("legalForm"));
+        colDebt.setCellValueFactory(new PropertyValueFactory<>("debt"));
+        colPackagingSmall.setCellValueFactory(new PropertyValueFactory<>("packagingSmall"));
+        colPackagingLarge.setCellValueFactory(new PropertyValueFactory<>("packagingLarge"));
+        colObligation.setCellValueFactory(new PropertyValueFactory<>("monthsWithoutFulfilledMonthlyObligation"));
+        colCustomerDate.setCellFactory(dateCellFactory);
+        colSanitize.setCellValueFactory(new PropertyValueFactory<>("monthsUntilSanitize"));
         colDebt.setCellFactory(debtCellFactory);
         colPackagingSmall.setCellFactory(packagingSmallCellFactory);
         colPackagingLarge.setCellFactory(packagingLargeCellFactory);
+        colSanitize.setCellFactory(sanitizeCellFactory);
+        colObligation.setCellFactory(obligationCellFactory);
+        colCustomerEdit.setCellFactory(editCellFactory);
     }
 
-    Callback<TableColumn<Customer, String>, TableCell<Customer, String>> packagingSmallCellFactory =
-            new Callback<TableColumn<Customer, String>, TableCell<Customer, String>>() {
+    Callback<TableColumn<CustomerDto, LocalDate>, TableCell<CustomerDto, LocalDate>> dateCellFactory = column -> new TableCell<CustomerDto, LocalDate>() {
+        @Override
+        protected void updateItem(LocalDate item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty) {
+                setText(null);
+            } else if (item == null) {
+                setText("Bez ugovora");
+            } else {
+                this.setText(item.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
+            }
+        }
+    };
+
+    Callback<TableColumn<CustomerDto, Integer>, TableCell<CustomerDto, Integer>> packagingSmallCellFactory =
+            new Callback<TableColumn<CustomerDto, Integer>, TableCell<CustomerDto, Integer>>() {
                 @Override
-                public TableCell<Customer, String> call(final TableColumn<Customer, String> param) {
-                    return new TableCell<Customer, String>() {
+                public TableCell<CustomerDto, Integer> call(final TableColumn<CustomerDto, Integer> param) {
+                    return new TableCell<CustomerDto, Integer>() {
                         final Label label = new Label();
 
                         @Override
-                        protected void updateItem(String item, boolean empty) {
+                        protected void updateItem(Integer item, boolean empty) {
                             super.updateItem(item, empty);
                             if (empty) {
                                 setGraphic(null);
                             } else {
-                                int currentIndex = indexProperty()
-                                        .getValue() < 0 ? 0
-                                        : indexProperty().getValue();
-                                Integer clmStatus = param
-                                        .getTableView().getItems()
-                                        .get(currentIndex).getPackagingSmall();
-                                Formatter.setLabelStyle(label, param.getTableView().getItems().get(currentIndex)
-                                        .getBacklogPackagingSmall() ? 1 : 0);
-                                label.setText(clmStatus.toString());
+                                Formatter.setPackagingLabelStyle(label, item);
+                                label.setText(item.toString());
+                                label.setPrefWidth(4000.0);
+                                label.setAlignment(Pos.CENTER);
+                                setGraphic(label);
+                            }
+                            setText(null);
+                            setAlignment(Pos.CENTER);
+                        }
+                    };
+                }
+            };
+
+    Callback<TableColumn<CustomerDto, Integer>, TableCell<CustomerDto, Integer>> packagingLargeCellFactory =
+            new Callback<TableColumn<CustomerDto, Integer>, TableCell<CustomerDto, Integer>>() {
+                @Override
+                public TableCell<CustomerDto, Integer> call(final TableColumn<CustomerDto, Integer> param) {
+                    return new TableCell<CustomerDto, Integer>() {
+                        final Label label = new Label();
+
+                        @Override
+                        protected void updateItem(Integer item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty) {
+                                setGraphic(null);
+                            } else {
+                                setPackagingLabelStyle(label, item);
+                                label.setText(item.toString());
+                                label.setPrefWidth(4000.0);
+                                label.setAlignment(Pos.CENTER);
+                                setGraphic(label);
+                            }
+                            setText(null);
+                            setAlignment(Pos.CENTER);
+                        }
+                    };
+                }
+            };
+
+    Callback<TableColumn<CustomerDto, Integer>, TableCell<CustomerDto, Integer>> sanitizeCellFactory =
+            new Callback<TableColumn<CustomerDto, Integer>, TableCell<CustomerDto, Integer>>() {
+                @Override
+                public TableCell<CustomerDto, Integer> call(final TableColumn<CustomerDto, Integer> param) {
+                    return new TableCell<CustomerDto, Integer>() {
+                        final Label label = new Label();
+                        CustomerDto customerDto = null;
+
+                        @Override
+                        protected void updateItem(Integer item, boolean empty) {
+                            customerDto = (CustomerDto) this.getTableRow().getItem();
+                            super.updateItem(item, empty);
+                            if (empty) {
+                                setGraphic(null);
+                            } else {
+                                if (item == null) {
+                                    setNotApplicableLabelStyle(label);
+                                } else {
+                                    label.setText(item.toString());
+                                    setSanitizeLabelStyle(label, item);
+                                    if (customerDto != null) {
+                                        int requiredNumberOfDays = Math.toIntExact(DAYS.between(customerDto.getLastSanitiseDate().plusDays(1),
+                                                customerDto.getLastSanitiseDate().plusMonths(customerDto.getRequiredSanitisePeriodInMonths())));
+                                        CustomerController.setTooltip(label,
+                                                "Preostalo dana: " + Math.toIntExact(requiredNumberOfDays - DAYS.between(customerDto.getLastSanitiseDate().plusDays(1), LocalDate.now())));
+                                    }
+                                }
                                 label.setPrefWidth(4000.0);
                                 label.setAlignment(Pos.CENTER);
                                 setGraphic(label);
@@ -261,88 +342,110 @@ public class CustomerController implements Initializable {
                             setText(null);
                             setAlignment(Pos.CENTER);
                         }
-
-
                     };
                 }
             };
 
-    Callback<TableColumn<Customer, String>, TableCell<Customer, String>> packagingLargeCellFactory =
-            new Callback<TableColumn<Customer, String>, TableCell<Customer, String>>() {
+    Callback<TableColumn<CustomerDto, Integer>, TableCell<CustomerDto, Integer>> obligationCellFactory =
+            new Callback<TableColumn<CustomerDto, Integer>, TableCell<CustomerDto, Integer>>() {
                 @Override
-                public TableCell<Customer, String> call(final TableColumn<Customer, String> param) {
-                    return new TableCell<Customer, String>() {
+                public TableCell<CustomerDto, Integer> call(final TableColumn<CustomerDto, Integer> param) {
+                    return new TableCell<CustomerDto, Integer>() {
+                        final Label label = new Label();
+                        CustomerDto customerDto = null;
+
+                        @Override
+                        protected void updateItem(Integer item, boolean empty) {
+                            super.updateItem(item, empty);
+
+                            if (empty) {
+                                setGraphic(null);
+                            } else {
+                                if (item == null) {
+                                    setNotApplicableLabelStyle(label);
+                                } else {
+                                    label.setText(item.toString());
+                                    setObligationLabelStyle(label, item);
+                                    customerDto = (CustomerDto) this.getTableRow().getItem();
+                                }
+                                label.setPrefWidth(4000.0);
+                                label.setAlignment(Pos.CENTER);
+                                setGraphic(label);
+                                this.hoverProperty().addListener((observable, oldValue, newValue) -> {
+                                    if (newValue) {
+                                        if (tooltipTimer != null) {
+                                            tooltipTimer.cancel();
+                                        }
+                                        TimerTask timerTask = new TimerTask() {
+                                            @Override
+                                            public void run() {
+                                                if (customerDto.getDate() != null && customerDto.getDate() != null) {
+                                                    if (customerDto.getMonthsWithoutFulfilledMonthlyObligation() < 1) {
+                                                        Platform.runLater(() -> label.setTooltip(null));
+                                                    } else {
+                                                        Platform.runLater(() -> CustomerController.setTooltip(label, "Učitavanje..."));
+                                                        Runnable runnable = () -> {
+                                                            StringBuilder sb = new StringBuilder();
+                                                            customerService.selectDatesWithUnfulfilledObligationForCustomer(customerDto).forEach(
+                                                                    date -> sb.append(date.format(DateTimeFormatter.ofPattern("MM.yyyy"))).append("\n")
+                                                            );
+                                                            Platform.runLater(() -> label.getTooltip().setText(sb.toString()));
+                                                        };
+                                                        Thread t = new Thread(runnable);
+                                                        t.setDaemon(true);
+                                                        t.start();
+                                                    }
+                                                } else {
+                                                    label.setTooltip(null);
+                                                }
+                                            }
+                                        };
+                                        tooltipTimer = new Timer();
+                                        tooltipTimer.schedule(timerTask, 800);
+                                    } else if (tooltipTimer != null) {
+                                        tooltipTimer.cancel();
+                                    }
+                                });
+                            }
+                            setText(null);
+                            setAlignment(Pos.CENTER);
+                        }
+                    };
+                }
+            };
+
+    Callback<TableColumn<CustomerDto, Double>, TableCell<CustomerDto, Double>> debtCellFactory =
+            new Callback<TableColumn<CustomerDto, Double>, TableCell<CustomerDto, Double>>() {
+                @Override
+                public TableCell<CustomerDto, Double> call(final TableColumn<CustomerDto, Double> param) {
+                    return new TableCell<CustomerDto, Double>() {
                         final Label label = new Label();
 
                         @Override
-                        protected void updateItem(String item, boolean empty) {
+                        protected void updateItem(Double item, boolean empty) {
                             super.updateItem(item, empty);
                             if (empty) {
                                 setGraphic(null);
                             } else {
-                                int currentIndex = indexProperty()
-                                        .getValue() < 0 ? 0
-                                        : indexProperty().getValue();
-                                Integer clmStatus = param
-                                        .getTableView().getItems()
-                                        .get(currentIndex).getPackagingLarge();
-                                Formatter.setLabelStyle(label, param.getTableView().getItems().get(currentIndex)
-                                        .getBacklogPackagingLarge() ? 1 : 0);
-                                label.setText(clmStatus.toString());
+                                setPackagingLabelStyle(label, (int) Math.round(item));
+                                label.setText(formatPrice(item));
+                                CustomerController.setTooltip(label, formatPrice(item));
                                 label.setPrefWidth(4000.0);
                                 label.setAlignment(Pos.CENTER);
                                 setGraphic(label);
                             }
-
                             setText(null);
                             setAlignment(Pos.CENTER);
                         }
-
-
                     };
                 }
             };
 
-    Callback<TableColumn<Customer, String>, TableCell<Customer, String>> debtCellFactory =
-            new Callback<TableColumn<Customer, String>, TableCell<Customer, String>>() {
+    Callback<TableColumn<CustomerDto, Boolean>, TableCell<CustomerDto, Boolean>> editCellFactory =
+            new Callback<TableColumn<CustomerDto, Boolean>, TableCell<CustomerDto, Boolean>>() {
                 @Override
-                public TableCell<Customer, String> call(final TableColumn<Customer, String> param) {
-                    return new TableCell<Customer, String>() {
-                        final Label label = new Label();
-
-                        @Override
-                        protected void updateItem(String item, boolean empty) {
-                            super.updateItem(item, empty);
-                            if (empty) {
-                                setGraphic(null);
-                            } else {
-                                int currentIndex = indexProperty()
-                                        .getValue() < 0 ? 0
-                                        : indexProperty().getValue();
-                                Double clmStatus = param
-                                        .getTableView().getItems()
-                                        .get(currentIndex).getDebt();
-                                Formatter.setLabelStyle(label, (int) Math.round(clmStatus));
-                                label.setText(String.format("%.02f", clmStatus));
-                                label.setPrefWidth(4000.0);
-                                label.setAlignment(Pos.CENTER);
-                                setGraphic(label);
-                            }
-
-                            setText(null);
-                            setAlignment(Pos.CENTER);
-                        }
-
-
-                    };
-                }
-            };
-
-    Callback<TableColumn<Customer, Boolean>, TableCell<Customer, Boolean>> editCellFactory =
-            new Callback<TableColumn<Customer, Boolean>, TableCell<Customer, Boolean>>() {
-                @Override
-                public TableCell<Customer, Boolean> call(final TableColumn<Customer, Boolean> param) {
-                    return new TableCell<Customer, Boolean>() {
+                public TableCell<CustomerDto, Boolean> call(final TableColumn<CustomerDto, Boolean> param) {
+                    return new TableCell<CustomerDto, Boolean>() {
                         final Image imgEdit = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/edit.png")));
                         final Button btnEdit = new Button();
 
@@ -353,12 +456,11 @@ public class CustomerController implements Initializable {
                                 setGraphic(null);
                             } else {
                                 btnEdit.setOnAction(e -> {
-                                    Customer customer = getTableView().getItems().get(getIndex());
-                                    updateCustomerFields(customer);
+                                    CustomerDto customerDto = (CustomerDto) this.getTableRow().getItem();
+                                    updateCustomerFields(customerService.findById(customerDto.getId()));
                                 });
 
                                 styleEditButton(btnEdit, imgEdit);
-
                                 setGraphic(btnEdit);
                                 setAlignment(Pos.CENTER);
                             }
@@ -372,16 +474,30 @@ public class CustomerController implements Initializable {
                             customerDialogController.getAddress().setText(customer.getAddress());
                             customerDialogController.getCity().setText(customer.getCity());
                             customerDialogController.getPhone().setText(customer.getPhone());
-                            customerDialogController.getSanitisePeriod().getValueFactory().setValue(customer.getSanitisePeriodInMonths());
+                            customerDialogController.getSanitisePeriod().getValueFactory().setValue(customer.getRequiredSanitisePeriodInMonths());
                             customerDialogController.getDate().setValue(customer.getDate());
-                            if (customer.getType().equals(LEGAL_ENTITY))
+                            if (customer.getLegalForm().equals(LEGAL_ENTITY))
                                 customerDialogController.getRbLegalEntity().setSelected(true);
                             else customerDialogController.getRbIndividual().setSelected(true);
+                            if (customer.getDate() != null)
+                                customerDialogController.getTbWithContract().setSelected(true);
+                            else {
+                                customerDialogController.getTbWithContract().setSelected(false);
+                                customerDialogController.getDate().setDisable(true);
+                                customerDialogController.getDate().setValue(null);
+                                customerDialogController.getSanitizeLabel().setDisable(true);
+                                customerDialogController.getSanitisePeriod().setDisable(true);
+                            }
                         }
                     };
                 }
             };
 
+    private static void setTooltip(Label label, String tooltip) {
+        Tooltip tt = new Tooltip(tooltip);
+        tt.setStyle("-fx-text-fill: white;");
+        label.setTooltip(tt);
+    }
 
     private CustomerController getController() {
         return this;
@@ -391,30 +507,33 @@ public class CustomerController implements Initializable {
      *  Add All users to observable list and update table
      */
     public void loadCustomerDetails() {
-
-        Runnable runnable = () -> {
+        Runnable runnable = () -> Platform.runLater(() -> {
             customerList.clear();
+            customerTable.getSortOrder().clear();
             customerTable.setItems(null);
-            customerList.addAll(customerService.getAll());
+            customerList.addAll(customerService.getAllDto());
             customerTable.setItems(customerList);
-            Platform.runLater(() -> customerTable.setPlaceholder(new Label("Nema podataka.")));
-        };
+            customerTable.setPlaceholder(new Label("Nema podataka."));
+        });
         Thread t = new Thread(runnable);
         t.setDaemon(true);
         t.start();
+        sidePaneController.resetCountsForAllFilters();
     }
 
     public void loadSearchDetails(String text) {
-        List<Customer> customers = customerService.findByTextFields(text);
+        List<CustomerDto> customersDto = customerService.findDtoByTextFields(text);
         customerList.clear();
-        customerList.addAll(customers);
+        Platform.runLater(() -> customerTable.getSortOrder().clear());
+        customerList.addAll(customersDto);
         customerTable.setItems(customerList);
     }
 
     public void reloadCustomerDetails() {
-        List<Customer> customers = customerService.getAll();
+        List<CustomerDto> customersDto = customerService.getAllDto();
         customerList.clear();
-        customerList.addAll(customers);
+        Platform.runLater(() -> customerTable.getSortOrder().clear());
+        customerList.addAll(customersDto);
         customerTable.setItems(customerList);
         customerTable.refresh();
     }

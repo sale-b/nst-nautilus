@@ -1,6 +1,7 @@
 package com.nautilus.domain;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,25 +15,27 @@ import java.util.Optional;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
-@ToString
-@Builder
-public class Order {
-
-    private Long id;
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+@SuperBuilder
+public class Order extends BaseEntity{
     @ToString.Exclude
     private Customer customer;
     private LocalDate date;
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
+    @EqualsAndHashCode.Exclude
     private List<OrderItem> items = new ArrayList<>();
     private DeliveredBy deliveredBy;
     private Boolean payed;
-    private Integer packagingDebtSmall;
-    private Integer packagingDebtLarge;
     private String note;
-    private LocalDateTime createdOn;
-    private LocalDateTime modifiedOn;
+
+    public Order(long orderId, Customer customer, LocalDate orderDate, ArrayList<OrderItem> items, DeliveredBy deliveredBy, boolean payed, String note, LocalDateTime createdOn, LocalDateTime modifiedOn) {
+        this(customer, orderDate, items, deliveredBy, payed, note);
+        this.id = orderId;
+        this.createdOn = createdOn;
+        this.modifiedOn=modifiedOn;
+    }
 
     public void addItem(OrderItem orderItem) {
         this.items.add(orderItem);
