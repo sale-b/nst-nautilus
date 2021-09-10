@@ -1,0 +1,29 @@
+# Project exclude paths
+/target/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+
+### VS Code ###
+.vscode/
+
+### Maven ###
+/.mvn/wrapper/maven-wrapper.jar
+/mvnw.cmd
+/mvnw
+/.mvn/wrapper/MavenWrapperDownloader.java
+/.mvn/wrapper/maven-wrapper.properties
+
+### LOG ###
+/log/nautilus/
