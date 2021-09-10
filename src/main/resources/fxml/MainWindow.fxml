@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView?>
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<fx:root maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="464.0" prefWidth="571.0" stylesheets="@../styles/Styles.css" type="StackPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <BorderPane fx:id="mainPane" prefHeight="464.0" prefWidth="839.0" style="-fx-border-width: 3; -fx-background-color: #f4f4f4;">
+         <top>
+            <HBox alignment="CENTER" spacing="2.0" style="-fx-background-color: #f4f4f4;" BorderPane.alignment="CENTER">
+               <children>
+                  <Label maxHeight="39.0" maxWidth="176.0" minHeight="39.0" minWidth="175.0" prefHeight="39.0" prefWidth="175.0" style="-fx-background-color: #6ed5e3;">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin></Label>
+                  <Label fx:id="topLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="39.0" style="-fx-cursor: move; -fx-background-color: #f4f4f4; -fx-text-fill: black;-fx-font-family: 'Roboto';-fx-font-size: 14px;" HBox.hgrow="ALWAYS">
+                     <cursor>
+                        <Cursor fx:constant="MOVE" />
+                     </cursor>
+                  </Label>
+                 <JFXButton fx:id="minimize" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="36.0" prefWidth="36.0" styleClass="window-buttons">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <font>
+                        <Font name="System Bold" size="36.0" />
+                     </font>
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
+                     <graphic>
+                        <MaterialDesignIconView fill="#7bb5ff" glyphName="WINDOW_MINIMIZE" size="20" styleClass="glyph-icon" />
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="maximizeNormalize" layoutX="663.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="36.0" prefWidth="36.0" styleClass="window-buttons">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                     <graphic>
+                        <MaterialDesignIconView fill="#7bb5ff" glyphName="WINDOW_MAXIMIZE" size="20" styleClass="glyph-icon" />
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="exit" layoutX="702.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="36.0" prefWidth="36.0" textFill="#7bb5ff">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                     <styleClass>
+                        <String fx:value="window-buttons" />
+                        <String fx:value="exit-button" />
+                     </styleClass>
+                     <graphic>
+                        <MaterialDesignIconView fill="#7bb5ff" glyphName="WINDOW_CLOSE" size="23" styleClass="glyph-icon" />
+                     </graphic>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets left="1.0" />
+                     </padding>
+                  </JFXButton>
+               </children>
+               <BorderPane.margin>
+                  <Insets right="10.0" />
+               </BorderPane.margin>
+            </HBox>
+         </top>
+         <left>
+            <VBox prefHeight="300.0" prefWidth="175.0" styleClass="side-bar-pane" BorderPane.alignment="CENTER">
+               <children>
+                  <ImageView fitHeight="83.0" fitWidth="155.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/nautilus-logo.png" />
+                     </image>
+                     <VBox.margin>
+                        <Insets left="10.0" />
+                     </VBox.margin>
+                  </ImageView>
+                  <Button fx:id="bt1" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#customersPage" prefHeight="40.0" prefWidth="152.0" styleClass="menu-button" text="Korisnici">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="12.0" />
+                     </VBox.margin>
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="USERS" size="18" />
+                     </graphic>
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding></Button>
+                  <Button fx:id="bt2" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#ordersPage" prefHeight="40.0" prefWidth="152.0" styleClass="menu-button" text="Porudžbine">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="12.0" />
+                     </VBox.margin>
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="CLIPBOARD" size="18" />
+                     </graphic>
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding></Button>
+                  <Button fx:id="bt3" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#articlesPage" prefHeight="40.0" prefWidth="152.0" styleClass="menu-button" text="Artikli">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="12.0" />
+                     </VBox.margin>
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="ARCHIVE" size="18" />
+                     </graphic>
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                  </Button>
+                  <Button fx:id="bt4" alignment="BASELINE_LEFT" layoutX="22.0" layoutY="188.0" mnemonicParsing="false" onAction="#packagingPage" prefHeight="40.0" prefWidth="152.0" styleClass="menu-button" text="Ambalaža">
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="12.0" />
+                     </VBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/bottle-icon.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="bt5" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#sanitizePage" prefHeight="40.0" prefWidth="152.0" styleClass="menu-button" text="Sanitacija">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="12.0" />
+                     </VBox.margin>
+                     <graphic>
+                        <FontAwesomeIconView fill="WHITE" glyphName="WRENCH" size="18" />
+                     </graphic>
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                  </Button>
+               </children></VBox>
+         </left>
+         <StackPane.margin>
+            <Insets />
+         </StackPane.margin>
+      </BorderPane>
+   </children>
+</fx:root>

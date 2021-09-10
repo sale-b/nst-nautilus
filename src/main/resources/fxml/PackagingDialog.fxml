@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="510.0" prefWidth="511.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nautilus.controller.dialogs.PackagingDialogController">
+   <children>
+      <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="497.0" prefWidth="501.0" spacing="10.0" styleClass="background" stylesheets="@../styles/Styles.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+         <children>
+            <FontAwesomeIconView fx:id="cancel" fill="#e36e6e" glyphName="REMOVE" onMouseClicked="#cancel" size="30" styleClass="close-dialog">
+               <VBox.margin>
+                  <Insets left="450.0" top="10.0" />
+               </VBox.margin>
+            </FontAwesomeIconView>
+            <Label fx:id="title" text="" textFill="WHITE">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="10.0" left="20.0" top="30.0" />
+               </VBox.margin>
+            </Label>
+            <TextField fx:id="userSearch" onKeyReleased="#search" prefHeight="30.0" prefWidth="329.0" promptText="Pretraga korisnika">
+               <VBox.margin>
+                  <Insets left="25.0" right="25.0" />
+               </VBox.margin>
+            </TextField>
+            <TextField fx:id="name" editable="false" prefHeight="30.0" prefWidth="329.0" promptText="Ime/Naziv">
+               <VBox.margin>
+                  <Insets left="25.0" right="25.0" />
+               </VBox.margin>
+            </TextField>
+            <TextField fx:id="city" editable="false" prefHeight="30.0" prefWidth="246.0" promptText="Mesto">
+               <VBox.margin>
+                  <Insets left="25.0" right="25.0" />
+               </VBox.margin>
+            </TextField>
+            <TextField fx:id="address" editable="false" prefHeight="30.0" prefWidth="246.0" promptText="Adresa">
+               <VBox.margin>
+                  <Insets left="25.0" right="25.0" />
+               </VBox.margin>
+            </TextField>
+            <TextField fx:id="phone" editable="false" prefHeight="30.0" prefWidth="246.0" promptText="Telefon">
+               <VBox.margin>
+                  <Insets left="25.0" right="25.0" />
+               </VBox.margin>
+            </TextField>
+            <TextField fx:id="legalForm" editable="false" prefHeight="30.0" prefWidth="246.0" promptText="Pravna forma">
+               <VBox.margin>
+                  <Insets left="25.0" right="25.0" />
+               </VBox.margin>
+            </TextField>
+            <DatePicker fx:id="date" prefHeight="30.0" prefWidth="278.0" promptText="Datum razduživanja ambalaže">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <VBox.margin>
+                  <Insets left="25.0" />
+               </VBox.margin>
+            </DatePicker>
+            <HBox prefHeight="30.0" prefWidth="200.0">
+               <children>
+                  <Label prefHeight="30.0" text="Razduživanje balona 15L:" textFill="WHITE">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Spinner fx:id="packagingSmallQuantity" editable="true" maxHeight="30.0" maxWidth="59.0" minHeight="30.0" minWidth="59.0" prefHeight="30.0" prefWidth="59.0">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </Spinner>
+               </children>
+               <VBox.margin>
+                  <Insets left="25.0" right="25.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox prefHeight="30.0" prefWidth="200.0">
+               <children>
+                  <Label prefHeight="30.0" text="Razduživanje balona 19L:" textFill="WHITE">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Spinner fx:id="packagingLargeQuantity" editable="true" maxHeight="30.0" maxWidth="59.0" minHeight="30.0" minWidth="59.0" prefHeight="30.0" prefWidth="59.0">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </Spinner>
+               </children>
+               <VBox.margin>
+                  <Insets left="25.0" right="25.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox nodeOrientation="RIGHT_TO_LEFT" prefHeight="31.0" prefWidth="461.0" spacing="10.0">
+               <children>
+                  <Button fx:id="savePackaging" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#savePackaging" prefHeight="30.0" prefWidth="75.0" styleClass="save-button" text="Sačuvaj" textFill="WHITE">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <effect>
+                        <DropShadow blurType="ONE_PASS_BOX" color="#6468b2" />
+                     </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Button fx:id="reset" mnemonicParsing="false" onAction="#reset" prefHeight="30.0" prefWidth="75.0" styleClass="reset-button" text="Resetuj" textFill="WHITE">
+                     <effect>
+                        <DropShadow blurType="ONE_PASS_BOX" color="#1965d0" />
+                     </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Button>
+               </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <VBox.margin>
+                  <Insets left="30.0" />
+               </VBox.margin>
+               <padding>
+                  <Insets left="30.0" />
+               </padding>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <effect>
+            <DropShadow />
+         </effect>
+      </VBox>
+      <ListView fx:id="customersList" onMouseClicked="#customerSelect" prefHeight="0.0" prefWidth="355.0" AnchorPane.leftAnchor="35.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="170.0" />
+      <FontAwesomeIconView glyphName="SEARCH" size="18" AnchorPane.bottomAnchor="346.6484375" AnchorPane.rightAnchor="45.0" AnchorPane.topAnchor="145.0" />
+   </children>
+</AnchorPane>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="rightVbox" prefHeight="559.0" prefWidth="250.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nautilus.controller.SidePaneController">
+   <children>
+      <AnchorPane minHeight="60.0" minWidth="230.0" onMouseClicked="#sanitizeLate" style="-fx-background-color: white; -fx-background-radius: 10px;" styleClass="side-pane-item">
+         <children>
+            <Label fx:id="labelSanitizeLate" alignment="CENTER" layoutY="2.0" prefHeight="58.0" prefWidth="100.0" styleClass="card-number" text="-" textFill="#5e5e5e" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="30.0" />
+               </font>
+               <padding>
+                  <Insets top="15.0" />
+               </padding>
+            </Label>
+            <Label fx:id="labelSanitizeLateTitle" alignment="CENTER" layoutX="17.0" layoutY="-13.0" minHeight="35.0" nodeOrientation="LEFT_TO_RIGHT" styleClass="card-heading" text="Sanitacija kasni" textFill="WHITE" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="-20.0">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <effect>
+                  <DropShadow color="#979595" height="29.9" radius="18.155" width="44.72" />
+               </effect>
+            </Label>
+         </children>
+         <effect>
+            <DropShadow color="#d0d0d0" height="12.1" offsetX="2.0" offsetY="2.0" radius="5.55" width="12.1" />
+         </effect>
+         <VBox.margin>
+            <Insets bottom="30.0" left="10.0" right="10.0" />
+         </VBox.margin>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </AnchorPane>
+      <AnchorPane minHeight="60.0" minWidth="230.0" onMouseClicked="#sanitizeNeeded" style="-fx-background-color: white; -fx-background-radius: 10px;" styleClass="side-pane-item">
+         <children>
+            <Label fx:id="labelSanitizeNeeded" alignment="CENTER" layoutY="2.0" prefHeight="58.0" prefWidth="100.0" styleClass="card-number" text="-" textFill="#5e5e5e" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="30.0" />
+               </font>
+               <padding>
+                  <Insets top="15.0" />
+               </padding>
+            </Label>
+            <Label fx:id="labelSanitizeNeededTitle" alignment="CENTER" layoutX="17.0" layoutY="-13.0" minHeight="35.0" nodeOrientation="LEFT_TO_RIGHT" styleClass="card-heading" text="Sanitacija potrebna" textFill="WHITE" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="-20.0">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <effect>
+                  <DropShadow color="#979595" height="29.9" radius="18.155" width="44.72" />
+               </effect>
+            </Label>
+         </children>
+         <effect>
+            <DropShadow color="#d0d0d0" height="12.1" offsetX="2.0" offsetY="2.0" radius="5.55" width="12.1" />
+         </effect>
+         <VBox.margin>
+            <Insets bottom="30.0" left="10.0" right="10.0" top="30.0" />
+         </VBox.margin>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </AnchorPane>
+      <AnchorPane minHeight="60.0" minWidth="230.0" onMouseClicked="#paymentLate" style="-fx-background-color: white; -fx-background-radius: 10px;" styleClass="side-pane-item">
+         <children>
+            <Label fx:id="labelPaymentLate" alignment="CENTER" layoutY="2.0" prefHeight="58.0" prefWidth="100.0" styleClass="card-number" text="-" textFill="#5e5e5e" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="30.0" />
+               </font>
+               <padding>
+                  <Insets top="15.0" />
+               </padding>
+            </Label>
+            <Label fx:id="labelPaymentLateTitle" alignment="CENTER" layoutX="17.0" layoutY="-13.0" minHeight="35.0" nodeOrientation="LEFT_TO_RIGHT" styleClass="card-heading" text="Naplata kasni" textFill="WHITE" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="-20.0">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <effect>
+                  <DropShadow color="#979595" height="29.9" radius="18.155" width="44.72" />
+               </effect>
+            </Label>
+         </children>
+         <effect>
+            <DropShadow color="#d0d0d0" height="12.1" offsetX="2.0" offsetY="2.0" radius="5.55" width="12.1" />
+         </effect>
+         <VBox.margin>
+            <Insets bottom="30.0" left="10.0" right="10.0" top="30.0" />
+         </VBox.margin>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </AnchorPane>
+      <AnchorPane minHeight="60.0" minWidth="230.0" onMouseClicked="#packagingDebt" style="-fx-background-color: white; -fx-background-radius: 10px;" styleClass="side-pane-item">
+         <children>
+            <Label fx:id="labelPackagingDebt" alignment="CENTER" layoutY="2.0" prefHeight="58.0" prefWidth="100.0" styleClass="card-number" text="-" textFill="#5e5e5e" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="30.0" />
+               </font>
+               <padding>
+                  <Insets top="15.0" />
+               </padding>
+            </Label>
+            <Label fx:id="labelPackagingDebtTitle" alignment="CENTER" layoutX="17.0" layoutY="-13.0" minHeight="35.0" nodeOrientation="LEFT_TO_RIGHT" styleClass="card-heading" text="Dug ambalaže" textFill="WHITE" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="-20.0">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <effect>
+                  <DropShadow color="#979595" height="29.9" radius="18.155" width="44.72" />
+               </effect>
+            </Label>
+         </children>
+         <effect>
+            <DropShadow color="#d0d0d0" height="12.1" offsetX="2.0" offsetY="2.0" radius="5.55" width="12.1" />
+         </effect>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <VBox.margin>
+            <Insets bottom="30.0" left="10.0" right="10.0" top="30.0" />
+         </VBox.margin>
+      </AnchorPane>
+      <AnchorPane minHeight="60.0" minWidth="230.0" onMouseClicked="#unfulfilledObligation" style="-fx-background-color: white; -fx-background-radius: 10px;" styleClass="side-pane-item">
+         <children>
+            <Label fx:id="labelUnfulfilledObligation" alignment="CENTER" layoutY="2.0" prefHeight="58.0" prefWidth="100.0" styleClass="card-number" text="-" textFill="#5e5e5e" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="30.0" />
+               </font>
+               <padding>
+                  <Insets top="15.0" />
+               </padding>
+            </Label>
+            <Label fx:id="labelUnfulfilledObligationTitle" alignment="CENTER" layoutX="17.0" layoutY="-13.0" minHeight="35.0" nodeOrientation="LEFT_TO_RIGHT" styleClass="card-heading" text="Ugovorna obaveza" textFill="WHITE" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="-20.0">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <effect>
+                  <DropShadow color="#979595" height="29.9" radius="18.155" width="44.72" />
+               </effect>
+            </Label>
+         </children>
+         <effect>
+            <DropShadow color="#d0d0d0" height="12.1" offsetX="2.0" offsetY="2.0" radius="5.55" width="12.1" />
+         </effect>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <VBox.margin>
+            <Insets bottom="30.0" left="10.0" right="10.0" top="30.0" />
+         </VBox.margin>
+      </AnchorPane>
+   </children>
+   <padding>
+      <Insets top="30.0" />
+   </padding>
+</VBox>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXDrawer?>
+<?import com.jfoenix.controls.JFXHamburger?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" prefHeight="750.0" prefWidth="800.0" styleClass="edge-to-edge" stylesheets="@../styles/Styles.css" vmax="0.92" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nautilus.controller.CustomerController">
+   <content>
+      <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
+         <children>
+            <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <top>
+                  <GridPane prefHeight="60.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="500.0" />
+                        <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="90.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <HBox prefHeight="100.0">
+                           <children>
+                              <TextField fx:id="searchBox" onKeyReleased="#search" prefHeight="25.0" prefWidth="463.0">
+                                 <HBox.margin>
+                                    <Insets left="10.0" top="7.0" />
+                                 </HBox.margin>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                              </TextField>
+                              <FontAwesomeIconView glyphName="SEARCH" size="18">
+                                 <HBox.margin>
+                                    <Insets left="5.0" top="10.0" />
+                                 </HBox.margin>
+                              </FontAwesomeIconView>
+                           </children>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </HBox>
+                        <HBox nodeOrientation="RIGHT_TO_LEFT" GridPane.columnIndex="1">
+                           <children>
+                              <JFXButton fx:id="delete" contentDisplay="RIGHT" onAction="#deleteSelected" prefHeight="30.0" prefWidth="100.0" styleClass="delete-button" text="Ukloni" textFill="WHITE">
+                                 <graphic>
+                                    <FontAwesomeIconView fill="WHITE" glyphName="REMOVE" size="15" />
+                                 </graphic>
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets right="10.0" top="5.0" />
+                                 </HBox.margin>
+                              </JFXButton>
+                              <JFXButton fx:id="add" contentDisplay="RIGHT" onAction="#addCustomer" prefHeight="30.0" prefWidth="100.0" styleClass="add-button" text="Dodaj" textFill="WHITE">
+                                 <graphic>
+                                    <FontAwesomeIconView fill="WHITE" glyphName="PLUS" size="15" />
+                                 </graphic>
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets right="10.0" top="5.0" />
+                                 </HBox.margin>
+                              </JFXButton>
+                           </children>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <GridPane.margin>
+                              <Insets right="260.0" />
+                           </GridPane.margin>
+                        </HBox>
+                        <JFXHamburger fx:id="hamburger" alignment="CENTER_LEFT" maxHeight="25.0" maxWidth="35.0" nodeOrientation="RIGHT_TO_LEFT" GridPane.columnIndex="1">
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding></JFXHamburger>
+                     </children>
+                     <BorderPane.margin>
+                        <Insets />
+                     </BorderPane.margin>
+                     <padding>
+                        <Insets top="20.0" />
+                     </padding>
+                  </GridPane>
+               </top>
+               <center>
+                  <AnchorPane BorderPane.alignment="CENTER">
+                     <children>
+                        <VBox fx:id="rightVbox" maxWidth="50.0" nodeOrientation="RIGHT_TO_LEFT" prefWidth="50.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <JFXDrawer fx:id="drawer" defaultDrawerSize="250.0" prefWidth="108.0" resizableOnDrag="true" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </VBox>
+                        <TableView fx:id="customerTable" minWidth="900.0" nodeOrientation="LEFT_TO_RIGHT" stylesheets="@../styles/Styles.css" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <columns>
+                              <TableColumn fx:id="colCustomerName" minWidth="100.0" text="Korisnik" />
+                              <TableColumn fx:id="colCustomerCity" minWidth="100.0" text="Mesto" />
+                              <TableColumn fx:id="colCustomerAddress" minWidth="100.0" text="Adresa" />
+                              <TableColumn fx:id="colCustomerPhone" minWidth="100.0" text="Telefon" />
+                              <TableColumn fx:id="colCustomerDate" minWidth="100.0" text="Datum&#10;ugovora" />
+                              <TableColumn fx:id="colCustomerLegalForm" minWidth="100.0" text="Pravna&#10;forma" />
+                              <TableColumn fx:id="colObligation" minWidth="100.0" text="Ugovorna&#10;obaveza" />
+                              <TableColumn fx:id="colSanitize" minWidth="100.0" text="Sanitacija" />
+                              <TableColumn fx:id="colDebt" minWidth="100.0" text="Potraživanja" />
+                              <TableColumn fx:id="colPackagingSmall" minWidth="100.0" text="Ambalaža 15L" />
+                              <TableColumn fx:id="colPackagingLarge" minWidth="100.0" text="Ambalaža 19L" />
+                              <TableColumn fx:id="colCustomerEdit" minWidth="70.0" style="-fx-alignment: CENTER;" text="Izmeni" />
+                           </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                           <contextMenu>
+                              <ContextMenu>
+                                 <items>
+                                    <MenuItem fx:id="deleteCustomers" mnemonicParsing="false" onAction="#deleteCustomers" text="Obriši" />
+                                 </items>
+                              </ContextMenu>
+                           </contextMenu>
+                        </TableView>
+                     </children>
+                     <BorderPane.margin>
+                        <Insets />
+                     </BorderPane.margin>
+                  </AnchorPane>
+               </center>
+            </BorderPane>
+         </children>
+      </AnchorPane>
+   </content>
+</ScrollPane>

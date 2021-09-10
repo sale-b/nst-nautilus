@@ -1,0 +1,390 @@
+/* CSS for app */
+
+@font-face {
+	-fx-font-family: 'Roboto';
+	src: url('/fonts/Roboto-Bold.ttf');
+}
+
+.close-dialog:hover {
+	-fx-fill: white!important;
+	-fx-cursor: hand;
+}
+
+.save-button {
+	-fx-background-color: linear-gradient(to left, #48a226, #9ed647);
+	-fx-background-radius: 15px;
+	-fx-font-size: 14px;
+	-fx-font-weight: bold;
+}
+
+.save-button:hover {
+	-fx-background-color: linear-gradient(to left, #4ea12f, #a4d754);
+	-fx-background-radius: 15px;
+	-fx-font-size: 14px;
+	-fx-font-weight: bold;
+	-fx-cursor: hand;
+}
+
+.delete-button {
+	-fx-background-color: linear-gradient(to left, #fe7878, #eab071);
+	-fx-background-radius: 15px;
+	-fx-font-size: 14px;
+	-fx-font-weight: bold;
+}
+
+.delete-button:hover {
+	-fx-background-color: linear-gradient(to left, #fc8484, #e8b47d);
+	-fx-background-radius: 15px;
+	-fx-font-size: 14px;
+	-fx-font-weight: bold;
+	-fx-cursor: hand;
+}
+
+.reset-button {
+	-fx-background-color: #f9f8fd;
+	-fx-background-radius: 15px;
+	-fx-font-size: 14px;
+	-fx-font-weight: bold;
+	-fx-text-fill: #b0b3bf;
+}
+
+.reset-button:hover {
+	-fx-background-color: #fefeff;
+	-fx-background-radius: 15px;
+	-fx-font-size: 14px;
+	-fx-font-weight: bold;
+	-fx-cursor: hand;
+	-fx-text-fill: #b0b3bf;
+}
+
+.add-button {
+	-fx-background-color: linear-gradient(to left, #78aefe, #71ead5);
+	-fx-background-radius: 15px;
+	-fx-font-size: 14px;
+	-fx-font-weight: bold;
+}
+
+.add-button:hover {
+	-fx-background-color: linear-gradient(to left, #85b5fd, #7ee8d6);
+	-fx-border-radius: 15px;
+	-fx-border-width: 1px;
+	/*-fx-border-color: linear-gradient(to bottom right, #b827fc 0%, #78aefe 25%, #71ead5 50%, #fec837 75%, #fd1892 100%);*/
+	-fx-background-radius: 20px;
+	-fx-font-size: 14px;
+	-fx-font-weight: bold;
+	-fx-cursor: hand;
+}
+
+.add-button:pressed {
+	/*-fx-background-color: #235891;*/
+}
+
+.drop-down-button {
+	-fx-background-color: #eeeeee!important;
+}
+
+.drop-down-button:hover {
+	-fx-background-color: #e4e4e4!important;
+}
+.date-picker > .arrow-button {
+	-fx-background-color: #eeeeee;
+	-fx-border-widtht: 0 0 0 1px;
+	-fx-border-color: silver;
+}
+
+/*.date-picker:editable > .arrow-button > * {*/
+/*	-fx-opacity: 0; !* Set the node in the button to be visible *!*/
+/*}*/
+
+.date-picker > .arrow-button:hover {
+	/*-fx-background-image: url("/images/remove2.png"); !* Url of the icon *!*/
+	-fx-background-color: #e4e4e4;
+	/*-fx-background-size: 100% 100%;*/
+
+}
+
+.drop-down-button:hover .glyph-icon {
+	-fx-fill: #575757!important;
+}
+
+#clear-search-button:hover .glyph-icon {
+	-fx-fill: #6ed5e3;
+}
+
+.list-cell:filled:hover {
+	-fx-background-color: #0096c9;
+	-fx-text-fill: white;
+}
+
+.scroll-bar {
+	-fx-padding: 3px;
+}
+
+.decrement-button {
+	-fx-padding: 3px;
+}
+
+.increment-button {
+	-fx-padding: 3px;
+}
+
+.table-view {
+	-fx-background-color: transparent;
+	-fx-font-size: 14px;
+}
+
+.table-view .column-header-background .filler {
+	-fx-background-color: transparent;
+}
+
+.table-view .column-header-background{
+	-fx-background-color: linear-gradient(to bottom, #1dbbdd44, #93f9b944);
+	-fx-background-radius: 7px 7px 0px 0px;
+	-fx-background-insets: 0 0 0 0;
+	-fx-padding: 0 0 5px 0;
+}
+
+.table-view .column-header {
+	-fx-background-color: transparent;
+}
+
+.table-view .table-cell{
+	-fx-border-color: transparent;
+	-fx-padding: 2 0 2 10px;
+	-fx-alignment: CENTER-LEFT;
+}
+
+.table-row-cell:hover {
+	-fx-background-color: #96ddf1!important;
+}
+
+.table-row-cell:selected {
+	-fx-background-color: #96ddf1!important;
+}
+.table-row-cell:selected .text {
+	-fx-fill: #ffffff!important;
+}
+
+.table-row-cell:odd .text{
+	-fx-background-color: #93f9b911;
+	-fx-background-insets: 0, 0 0 1 0;
+	-fx-padding: 0.0em;
+	-fx-fill: #3b3b3b;
+}
+
+.table-row-cell:even .text{
+	-fx-background-color: #1dbbdd11;
+	-fx-background-insets: 0, 0 0 1 0;
+	-fx-padding: 0.0em;
+	-fx-fill: #3b3b3b;
+}
+.table-row-cell:odd {
+	-fx-background-color: #93f9b911;
+}
+
+.table-row-cell:even{
+	-fx-background-color: #1dbbdd11;
+}
+
+.side-bar-pane {
+	-fx-background-color: linear-gradient(to bottom, #6ed5e3, #7bb5ff);
+}
+
+.scroll-bar:vertical,
+.scroll-bar:vertical .track,
+.scroll-bar:vertical .track-background,
+.scroll-bar:horizontal,
+.scroll-bar:horizontal .track,
+.scroll-bar:horizontal .track-background {
+	-fx-background-color: transparent;
+}
+
+.table-view .virtual-flow .scroll-bar .increment-button,
+.table-view .virtual-flow .scroll-bar .decrement-button {
+	-fx-opacity: 0;
+	-fx-padding: 2;
+}
+
+.scroll-bar:vertical .thumb{
+	-fx-background-color:  linear-gradient(to bottom, #1dbbdd44, #93f9b944);
+}
+
+.scroll-bar:horizontal .thumb {
+	-fx-background-color:  linear-gradient(to right, #1dbbdd44, #93f9b944);
+}
+
+.table-row-cell:selected  {
+	-fx-background-color: #81c483;
+	/*-fx-background-radius: 15px;*/
+}
+
+.table-view > .column-header-background > .show-hide-columns-button {
+	-fx-background-color: turquoise;
+	-fx-background-radius: 50%;
+}
+
+.menu-button{
+	-fx-background-radius: 10px;
+	-fx-background-color: transparent;
+	-fx-font-family:"Segoe UI", Helvetica, Arial, sans-serif;
+	-fx-font-size: 1.5em; /* 12 */
+	-fx-text-fill: #ffffff;
+	-fx-font-weight: bold;
+}
+
+.menu-button:focused {
+	-fx-background-color: #96ddf1;
+	-fx-border-insets: 1 1 1 1, 0;
+	-fx-font-size: 1.5em;
+}
+
+.menu-button:pressed {
+	-fx-background-color: #96ddf1;
+	-fx-text-fill: white;
+	-fx-font-size: 1.5em;
+}
+
+.menu-button:hover {
+	-fx-background-color: #96ddf1;
+	-fx-font-size: 1.5em;
+}
+
+.card-heading {
+	-fx-font-family: 'Roboto';
+	-fx-font-size: 1.5em;
+}
+
+.card-number {
+	-fx-font-family: 'Roboto';
+	-fx-font-size: 3em;
+}
+
+.side-pane-item:hover {
+	-fx-border-width: 0 5 0 5;
+	-fx-border-color: transparent;
+}
+
+
+.jfx-hamburger StackPane {
+	-fx-background-color: #7bb5ff;
+}
+
+
+.window-buttons {
+	-fx-background-color: #f4f4f4;
+}
+
+.window-buttons:hover {
+	-fx-background-color: #7f7f7f;
+	-fx-fill: white;
+	-fx-text-fill: white;
+}
+
+.button:hover .glyph-icon
+{
+	-fx-text-fill: white;
+	-fx-fill: white;
+}
+
+.exit-button:hover {
+	-fx-background-color: red;
+}
+
+.order .table-row-cell:hover:empty {
+	-fx-background-color: transparent!important;
+}
+
+.order .table-row-cell:empty {
+	-fx-background-color: transparent;
+	-fx-background-radius: 0;
+}
+
+.order .table-row-cell:empty .table-cell {
+	-fx-border-width: 0px;
+}
+
+.order .table-cell {
+	-fx-border-width: 0 0 0 0;
+	-fx-padding: 5px 0 0 0;
+}
+
+.order .table-row-cell {
+	-fx-background-color: transparent;
+}
+
+.order .table-row-cell:hover {
+	-fx-background-color: transparent!important;
+}
+
+.order .table-row-cell:selected {
+	-fx-background-color: transparent!important;
+	-fx-background-radius: 0px;
+}
+.order .table-row-cell:selected .text {
+	-fx-fill: #3b3b3b!important;
+}
+
+.order .table-row-cell .text {
+	-fx-fill: #3b3b3b!important;
+}
+
+.order .column-header-background{
+	-fx-background-color: transparent;;
+}
+
+.order .column-header .label {
+	-fx-text-fill: white;
+}
+
+.order .virtual-flow .scroll-bar:vertical .thumb{
+	/*-fx-background-color:  linear-gradient(to bottom, #1dbbdd44, #93f9b944);*/
+	-fx-background-color: white;
+}
+
+.order .virtual-flow .scroll-bar:horizontal .thumb {
+	/*-fx-background-color:  linear-gradient(to right, #1dbbdd44, #93f9b944);*/
+	-fx-background-color: white;
+}
+
+.column-header.leftAlignedTableColumnHeader > .label {
+	-fx-alignment: center-left;
+	-fx-padding: 0 0 0 10px;
+}
+
+.column-header.rightAlignedTableColumnHeader > .label {
+	-fx-alignment: center-right;
+	-fx-padding: 0 0 0 10px;
+}
+
+.btnGreen{
+	-fx-background-color:  #3cbc53;
+}
+
+.background{
+	-fx-background-color: linear-gradient(to bottom, #6ed5e3, #7bb5ff);
+	-fx-background-radius: 2em;
+	-fx-border-radius:2em;
+}
+
+.background-vbox{
+	-fx-background-color: linear-gradient(to bottom, #6ed5e3, #7bb5ff);
+	-fx-background-radius: 2em 0 0 2em;
+	-fx-border-radius:2em 0 0 2em;
+}
+
+.table-view *.scroll-bar:horizontal *.increment-button,
+.table-view *.scroll-bar:horizontal *.decrement-button {
+	-fx-background-color: null;
+	-fx-background-radius: 0;
+	-fx-background-insets: 0;
+	-fx-padding: 0;
+}
+
+.table-view *.scroll-bar:horizontal *.increment-arrow,
+.table-view *.scroll-bar:horizontal *.decrement-arrow {
+	-fx-background-color: null;
+	-fx-background-radius: 0;
+	-fx-background-insets: 0;
+	-fx-padding: 0;
+	-fx-shape: null;
+}
